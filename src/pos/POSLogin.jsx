@@ -11,7 +11,7 @@ export default function POSLogin() {
     e.preventDefault();
     const { data, error } = await supabase
       .from("shops")
-      .select("id")
+      .select("id") // 'id' should be the UUID
       .eq("username", username)
       .eq("password", password)
       .single();
@@ -21,7 +21,7 @@ export default function POSLogin() {
       return;
     }
 
-    localStorage.setItem("shop_id", data.id);
+    localStorage.setItem("shop_id", data.id); // Make sure this is the UUID
     navigate("/pos/products");
   };
 
