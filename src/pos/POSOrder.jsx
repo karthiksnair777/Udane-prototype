@@ -5,6 +5,7 @@ export default function POSOrder() {
   const [orders, setOrders] = useState([]);
   const [notification, setNotification] = useState(null);
   const [shopName, setShopName] = useState("");
+  const [updatingOrderId, setUpdatingOrderId] = useState(null);
   const shopId = localStorage.getItem("shop_id");
   const notifiedOrderIds = useRef(new Set());
 
@@ -88,6 +89,24 @@ export default function POSOrder() {
     };
   }, [shopId, shopName]);
 
+  // Function to update order status
+  async function handleStatusChange(orderId, newStatus) {
+    setUpdatingOrderId(orderId);
+    const { data, error } = await supabase
+      .from("orders")
+      .update({ status: newStatus })
+      .eq("id", orderId)
+      .select()
+      .single();
+
+    if (!error && data) {
+      setOrders((prev) =>
+        prev.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o))
+      );
+    }
+    setUpdatingOrderId(null);
+  }
+
   return (
     <div style={{ padding: 20 }}>
       <h2>Incoming Orders (Realtime)</h2>
@@ -120,7 +139,23 @@ export default function POSOrder() {
           </div>
           <div>Total: ₹{o.total}</div>
           <div>From Customer: {o.from_customer ? "Yes" : "No"}</div>
-          <div>Status: {o.status || "Pending"}</div>
+          <div>
+            Status:{" "}
+            <select
+              value={o.status || "Pending"}
+              disabled={updatingOrderId === o.id}
+              onChange={(e) => handleStatusChange(o.id, e.target.value)}
+              style={{ marginLeft: 8 }}
+            >
+              <option value="Pending">Pending</option>
+              <option value="Processing">Processing</option>
+              <option value="In Transit">In Transit</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+            {updatingOrderId === o.id && (
+              <span style={{ marginLeft: 8, color: "#888" }}>Updating...</span>
+            )}
+          </div>
           <div>Placed At: {new Date(o.created_at).toLocaleString()}</div>
         </div>
       ))}
