@@ -5,7 +5,7 @@ export default function CustomerHeader() {
   return (
     <header
       style={{
-        background: "#fef9c3",
+        background: "#ffffff",
         padding: "16px 0",
         marginBottom: "30px",
         boxShadow: "0 2px 8px rgba(0,0,0,0.04)",

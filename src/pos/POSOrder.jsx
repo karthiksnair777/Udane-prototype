@@ -12,7 +12,6 @@ export default function POSOrder() {
   useEffect(() => {
     if (!shopId) return;
 
-    // Get shop name for current shopId
     async function fetchShopName() {
       const { data, error } = await supabase
         .from("shops")
@@ -27,7 +26,6 @@ export default function POSOrder() {
   useEffect(() => {
     if (!shopId || !shopName) return;
 
-    // Initial load: get all orders for this shop name
     const loadOrders = async () => {
       const { data, error } = await supabase
         .from("orders")
@@ -35,7 +33,6 @@ export default function POSOrder() {
         .order("created_at", { ascending: false });
 
       if (!error && data) {
-        // Filter orders where shop.name matches current shopName
         const filtered = data.filter((o) => o.shop?.name === shopName);
         setOrders(filtered);
       }
@@ -43,7 +40,6 @@ export default function POSOrder() {
 
     loadOrders();
 
-    // Realtime subscription to new orders
     const channel = supabase
       .channel("realtime-orders")
       .on(
@@ -55,7 +51,6 @@ export default function POSOrder() {
         },
         (payload) => {
           const newOrder = payload.new;
-          // Fetch shop name for new order
           if (newOrder.shop_id) {
             supabase
               .from("shops")
@@ -72,7 +67,7 @@ export default function POSOrder() {
                   setOrders((prev) => [newOrder, ...prev]);
                   if (!notifiedOrderIds.current.has(newOrder.id)) {
                     setNotification(
-                      `New customer order received! Order #${newOrder.id}`
+                      `🛎️ New customer order received! Order #${newOrder.id}`
                     );
                     notifiedOrderIds.current.add(newOrder.id);
                     setTimeout(() => setNotification(null), 4000);
@@ -89,7 +84,6 @@ export default function POSOrder() {
     };
   }, [shopId, shopName]);
 
-  // Function to update order status
   async function handleStatusChange(orderId, newStatus) {
     setUpdatingOrderId(orderId);
     const { data, error } = await supabase
@@ -108,55 +102,135 @@ export default function POSOrder() {
   }
 
   return (
-    <div style={{ padding: 20 }}>
-      <h2>Incoming Orders (Realtime)</h2>
+    <div
+      style={{
+        maxWidth: 720,
+        margin: "40px auto",
+        padding: 24,
+        fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+      }}
+    >
+      <h2
+        style={{
+          marginBottom: 20,
+          color: "#2f855a",
+          fontWeight: "700",
+          fontSize: "2rem",
+          letterSpacing: "0.05em",
+        }}
+      >
+        Incoming Orders (Realtime)
+      </h2>
+
       {notification && (
         <div
+          role="alert"
           style={{
             background: "#38a169",
             color: "white",
-            padding: "10px 20px",
-            borderRadius: "6px",
-            marginBottom: "15px",
-            fontWeight: "bold",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+            padding: "14px 20px",
+            borderRadius: 8,
+            marginBottom: 20,
+            fontWeight: "600",
+            boxShadow: "0 3px 10px rgba(0,0,0,0.12)",
+            fontSize: "1.1rem",
+            userSelect: "none",
           }}
         >
           {notification}
         </div>
       )}
+
+      {orders.length === 0 && (
+        <p style={{ color: "#718096", fontSize: "1.1rem" }}>
+          No orders found.
+        </p>
+      )}
+
       {orders.map((o) => (
         <div
           key={o.id}
           style={{
-            border: "1px solid #ccc",
-            padding: 10,
-            marginBottom: 10,
+            border: "1px solid #cbd5e0",
+            borderRadius: 12,
+            padding: 18,
+            marginBottom: 16,
+            backgroundColor: "#f9fafb",
+            boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
           }}
         >
-          <div>
-            <strong>Order #{o.id}</strong>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginBottom: 8,
+              fontWeight: "700",
+              fontSize: "1.15rem",
+              color: "#2d3748",
+            }}
+          >
+            <span>Order #{o.id}</span>
+            <span style={{ color: "#38a169" }}>₹{o.total}</span>
           </div>
-          <div>Total: ₹{o.total}</div>
-          <div>From Customer: {o.from_customer ? "Yes" : "No"}</div>
-          <div>
-            Status:{" "}
+
+          <div
+            style={{
+              fontSize: "0.95rem",
+              color: "#4a5568",
+              marginBottom: 8,
+            }}
+          >
+            From Customer: <strong>{o.from_customer ? "Yes" : "No"}</strong>
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+              marginBottom: 8,
+              fontSize: "1rem",
+            }}
+          >
+            <label htmlFor={`status-${o.id}`} style={{ fontWeight: "600" }}>
+              Status:
+            </label>
             <select
+              id={`status-${o.id}`}
               value={o.status || "Pending"}
               disabled={updatingOrderId === o.id}
               onChange={(e) => handleStatusChange(o.id, e.target.value)}
-              style={{ marginLeft: 8 }}
+              style={{
+                padding: "6px 12px",
+                borderRadius: 6,
+                border: "1px solid #cbd5e0",
+                cursor: updatingOrderId === o.id ? "not-allowed" : "pointer",
+                fontWeight: "600",
+                color: "#2d3748",
+              }}
             >
               <option value="Pending">Pending</option>
               <option value="Processing">Processing</option>
               <option value="In Transit">In Transit</option>
+              <option value="Done">Done</option> {/* Added Done option */}
               <option value="Cancelled">Cancelled</option>
             </select>
+
             {updatingOrderId === o.id && (
-              <span style={{ marginLeft: 8, color: "#888" }}>Updating...</span>
+              <span style={{ color: "#718096", fontStyle: "italic" }}>
+                Updating...
+              </span>
             )}
           </div>
-          <div>Placed At: {new Date(o.created_at).toLocaleString()}</div>
+
+          <div
+            style={{
+              fontSize: "0.85rem",
+              color: "#a0aec0",
+            }}
+          >
+            Placed At: {new Date(o.created_at).toLocaleString()}
+          </div>
         </div>
       ))}
     </div>
