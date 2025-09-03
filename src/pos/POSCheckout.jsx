@@ -45,7 +45,7 @@ export default function POSCheckout() {
       {/* POS Header/Menu */}
       <header
         style={{
-          background: "#e6fffa",
+          background: "#ffffffff",
           padding: "16px 0",
           marginBottom: "20px",
           boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
@@ -101,12 +101,12 @@ export default function POSCheckout() {
           margin: "60px auto",
           padding: "30px",
           borderRadius: "12px",
-          backgroundColor: "#fefcbf", // light yellow
+          backgroundColor: "#38a169", // light yellow
           boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
           fontFamily: "'Segoe UI', sans-serif",
         }}
       >
-        <h2 style={{ color: "#2f855a", marginBottom: "20px" }}>🧾 Checkout</h2>
+        <h2 style={{ color: "#ffffffff", marginBottom: "20px" }}>🧾 Checkout</h2>
 
         <div style={{ marginBottom: "20px" }}>
           {cart.map((item) => (
@@ -149,8 +149,8 @@ export default function POSCheckout() {
             marginTop: "30px",
             width: "100%",
             padding: "14px",
-            backgroundColor: "#38a169",
-            color: "white",
+            backgroundColor: "#ffffffff",
+            color: "black",
             border: "none",
             borderRadius: "6px",
             fontWeight: "600",

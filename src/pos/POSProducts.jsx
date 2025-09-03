@@ -116,7 +116,7 @@ export default function POSProducts() {
       {/* POS Header/Menu */}
       <header
         style={{
-          background: "#e6fffa",
+          background: "#ffffffff",
           padding: "16px 0",
           marginBottom: "20px",
           boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
@@ -171,7 +171,7 @@ export default function POSProducts() {
         style={{
           display: "flex",
           minHeight: "100vh",
-          backgroundColor: "#fef9c3",
+          backgroundColor: "#ffffffff",
           fontFamily: "'Segoe UI', sans-serif",
         }}
       >
@@ -229,50 +229,70 @@ export default function POSProducts() {
 
         {/* Cart */}
         <div
+  style={{
+    flex: 1,
+    backgroundColor: "#38a169",
+    padding: "30px",
+    borderLeft: "3px solid #ffffffff",
+  }}
+>
+  <h3 style={{ color: "#ffffffff", marginBottom: "20px" }}>🛒 Cart</h3>
+
+  {cart.length === 0 ? (
+    <p style={{ color: "#ffffffff" }}>Your cart is empty.</p>
+  ) : (
+    cart.map((item) => (
+      <div key={item.id} style={{ marginBottom: "10px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div>
+          {item.name} × {item.qty} = ₹{item.qty * item.price}
+        </div>
+        <button
+          onClick={() => {
+            // Remove the item from cart
+            setCart((prev) => prev.filter((cartItem) => cartItem.id !== item.id));
+          }}
           style={{
-            flex: 1,
-            backgroundColor: "#e6fffa",
-            padding: "30px",
-            borderLeft: "3px solid #c6f6d5",
+            backgroundColor: "#e53e3e",
+            border: "none",
+            color: "white",
+            padding: "4px 8px",
+            borderRadius: "4px",
+            cursor: "pointer",
+            fontWeight: "bold",
+            fontSize: "0.8em",
           }}
         >
-          <h3 style={{ color: "#2f855a", marginBottom: "20px" }}>🛒 Cart</h3>
+          Remove
+        </button>
+      </div>
+    ))
+  )}
 
-          {cart.length === 0 ? (
-            <p style={{ color: "#718096" }}>Your cart is empty.</p>
-          ) : (
-            cart.map((item) => (
-              <div key={item.id} style={{ marginBottom: "10px" }}>
-                {item.name} × {item.qty} = ₹{item.qty * item.price}
-              </div>
-            ))
-          )}
-
-          <hr style={{ margin: "20px 0" }} />
-          <strong>
-            Total: ₹
-            {cart.reduce((sum, item) => sum + item.qty * item.price, 0)}
-          </strong>
-          <br />
-          <button
-            onClick={goToCheckout}
-            disabled={cart.length === 0}
-            style={{
-              marginTop: "20px",
-              padding: "12px 18px",
-              backgroundColor: "#2f855a",
-              color: "white",
-              border: "none",
-              borderRadius: "6px",
-              fontWeight: "bold",
-              width: "100%",
-              cursor: cart.length === 0 ? "not-allowed" : "pointer",
-              opacity: cart.length === 0 ? 0.6 : 1,
-            }}
-          >
-            Proceed to Checkout
-          </button>
-        </div>
+  <hr style={{ margin: "20px 0" }} />
+  <strong>
+    Total: ₹
+    {cart.reduce((sum, item) => sum + item.qty * item.price, 0)}
+  </strong>
+  <br />
+  <button
+    onClick={goToCheckout}
+    disabled={cart.length === 0}
+    style={{
+      marginTop: "20px",
+      padding: "12px 18px",
+      backgroundColor: "#2f855a",
+      color: "white",
+      border: "none",
+      borderRadius: "6px",
+      fontWeight: "bold",
+      width: "100%",
+      cursor: cart.length === 0 ? "not-allowed" : "pointer",
+      opacity: cart.length === 0 ? 0.6 : 1,
+    }}
+  >
+    Proceed to Checkout
+  </button>
+</div>
       </div>
 
       {/* Modal */}
