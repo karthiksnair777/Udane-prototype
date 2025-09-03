@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 
 export default function POSCheckout() {
@@ -41,71 +41,126 @@ export default function POSCheckout() {
   };
 
   return (
-    <div
-      style={{
-        maxWidth: "500px",
-        margin: "60px auto",
-        padding: "30px",
-        borderRadius: "12px",
-        backgroundColor: "#fefcbf", // light yellow
-        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-        fontFamily: "'Segoe UI', sans-serif",
-      }}
-    >
-      <h2 style={{ color: "#2f855a", marginBottom: "20px" }}>🧾 Checkout</h2>
-
-      <div style={{ marginBottom: "20px" }}>
-        {cart.map((item) => (
+    <>
+      {/* POS Header/Menu */}
+      <header
+        style={{
+          background: "#e6fffa",
+          padding: "16px 0",
+          marginBottom: "20px",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: 900,
+            margin: "0 auto",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
           <div
-            key={item.id}
             style={{
-              display: "flex",
-              justifyContent: "space-between",
-              marginBottom: "10px",
+              fontWeight: "bold",
+              fontSize: "1.5em",
+              color: "#2f855a",
             }}
           >
-            <span>
-              {item.name} × {item.qty}
-            </span>
-            <span>₹{item.qty * item.price}</span>
+            Udane POS
           </div>
-        ))}
-      </div>
-
-      <hr />
+          <nav>
+            <Link
+              to="/pos/products"
+              style={{
+                marginRight: 20,
+                color: "#2f855a",
+                textDecoration: "none",
+                fontWeight: 500,
+              }}
+            >
+              Products
+            </Link>
+            <Link
+              to="/pos/order"
+              style={{
+                color: "#2f855a",
+                textDecoration: "none",
+                fontWeight: 500,
+              }}
+            >
+              Orders
+            </Link>
+          </nav>
+        </div>
+      </header>
 
       <div
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginTop: "20px",
-          fontWeight: "bold",
-          fontSize: "18px",
+          maxWidth: "500px",
+          margin: "60px auto",
+          padding: "30px",
+          borderRadius: "12px",
+          backgroundColor: "#fefcbf", // light yellow
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+          fontFamily: "'Segoe UI', sans-serif",
         }}
       >
-        <span>Total</span>
-        <span>
-          ₹{cart.reduce((sum, item) => sum + item.qty * item.price, 0)}
-        </span>
-      </div>
+        <h2 style={{ color: "#2f855a", marginBottom: "20px" }}>🧾 Checkout</h2>
 
-      <button
-        onClick={handleConfirm}
-        style={{
-          marginTop: "30px",
-          width: "100%",
-          padding: "14px",
-          backgroundColor: "#38a169",
-          color: "white",
-          border: "none",
-          borderRadius: "6px",
-          fontWeight: "600",
-          fontSize: "16px",
-          cursor: "pointer",
-        }}
-      >
-        ✅ Confirm & Print
-      </button>
-    </div>
+        <div style={{ marginBottom: "20px" }}>
+          {cart.map((item) => (
+            <div
+              key={item.id}
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginBottom: "10px",
+              }}
+            >
+              <span>
+                {item.name} × {item.qty}
+              </span>
+              <span>₹{item.qty * item.price}</span>
+            </div>
+          ))}
+        </div>
+
+        <hr />
+
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginTop: "20px",
+            fontWeight: "bold",
+            fontSize: "18px",
+          }}
+        >
+          <span>Total</span>
+          <span>
+            ₹{cart.reduce((sum, item) => sum + item.qty * item.price, 0)}
+          </span>
+        </div>
+
+        <button
+          onClick={handleConfirm}
+          style={{
+            marginTop: "30px",
+            width: "100%",
+            padding: "14px",
+            backgroundColor: "#38a169",
+            color: "white",
+            border: "none",
+            borderRadius: "6px",
+            fontWeight: "600",
+            fontSize: "16px",
+            cursor: "pointer",
+          }}
+        >
+          ✅ Confirm & Print
+        </button>
+      </div>
+    </>
   );
 }

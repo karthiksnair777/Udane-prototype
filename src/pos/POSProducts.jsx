@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 
 export default function POSProducts() {
@@ -113,6 +113,59 @@ export default function POSProducts() {
 
   return (
     <>
+      {/* POS Header/Menu */}
+      <header
+        style={{
+          background: "#e6fffa",
+          padding: "16px 0",
+          marginBottom: "20px",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: 900,
+            margin: "0 auto",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <div
+            style={{
+              fontWeight: "bold",
+              fontSize: "1.5em",
+              color: "#2f855a",
+            }}
+          >
+            Udane POS
+          </div>
+          <nav>
+            <Link
+              to="/pos/products"
+              style={{
+                marginRight: 20,
+                color: "#2f855a",
+                textDecoration: "none",
+                fontWeight: 500,
+              }}
+            >
+              Products
+            </Link>
+            <Link
+              to="/pos/order"
+              style={{
+                color: "#2f855a",
+                textDecoration: "none",
+                fontWeight: 500,
+              }}
+            >
+              Orders
+            </Link>
+          </nav>
+        </div>
+      </header>
+
       {/* Main Layout */}
       <div
         style={{

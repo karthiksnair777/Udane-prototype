@@ -11,7 +11,7 @@ import POSOrder from './pos/POSOrder';
 
 // Customer imports
 import CustomerLogin from './customer/CustomerLogin';
-import ShopSelection from './customer/ShopSelection';
+// import ShopSelection from './customer/ShopSelection';
 import CustomerProducts from './customer/CustomerProducts';
 import CustomerCart from './customer/CustomerCart';
 import CustomerOrders from './customer/CustomerOrders';
@@ -30,10 +30,10 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <Route path="*" element={<div>Page not found</div>} />
 
        <Route path="/customer/login" element={<CustomerLogin />} />
-  <Route path="/customer/shops" element={<ShopSelection />} />
-  <Route path="/customer/products" element={<CustomerProducts />} />
-  <Route path="/customer/cart" element={<CustomerCart />} />
-  <Route path="/customer/orders" element={<CustomerOrders />} />
+      {/* <Route path="/customer/shops" element={<ShopSelection />} /> */}
+      <Route path="/customer/products" element={<CustomerProducts />} />
+      <Route path="/customer/cart" element={<CustomerCart />} />
+      <Route path="/customer/orders" element={<CustomerOrders />} />
     </Routes>
   </BrowserRouter>
 );

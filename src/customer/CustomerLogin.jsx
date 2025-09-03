@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
+import CustomerHeader from "./CustomerHeader";
 
 export default function CustomerLogin() {
   const [email, setEmail] = useState("");
@@ -24,7 +25,7 @@ export default function CustomerLogin() {
     }
 
     localStorage.setItem("customer_id", data.id);
-    navigate("/customer/shops");
+    navigate("/customer/products");
   };
 
   const handleRegister = async () => {
@@ -40,31 +41,41 @@ export default function CustomerLogin() {
     }
 
     localStorage.setItem("customer_id", data.id);
-    navigate("/customer/shops");
+    navigate("/customer/products");
   };
 
+  const isLoggedIn = !!localStorage.getItem("customer_id");
+
   return (
-    <div style={{ maxWidth: 300, margin: "50px auto" }}>
-      <h2>Customer Login</h2>
-      <form onSubmit={handleLogin}>
-        <input
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={{ display: "block", marginBottom: "10px" }}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={{ display: "block", marginBottom: "10px" }}
-        />
-        <button type="submit">Login</button>
-        <button type="button" onClick={handleRegister} style={{ marginLeft: 10 }}>
-          Register
-        </button>
-      </form>
-    </div>
+    <>
+      <CustomerHeader />
+      <div style={{ maxWidth: 300, margin: "50px auto" }}>
+        <h2>Customer Login</h2>
+        <form onSubmit={handleLogin}>
+          <input
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            style={{ display: "block", marginBottom: "10px" }}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            style={{ display: "block", marginBottom: "10px" }}
+          />
+          <button type="submit">Login</button>
+          <button
+            type="button"
+            onClick={handleRegister}
+            style={{ marginLeft: 10 }}
+          >
+            Register
+          </button>
+        </form>
+      </div>
+    </>
   );
 }
+              
