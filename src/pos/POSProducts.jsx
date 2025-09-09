@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 
@@ -12,16 +12,63 @@ export default function POSProducts() {
   const [newProductPrice, setNewProductPrice] = useState("");
   const [newProductImage, setNewProductImage] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [stockAlerts, setStockAlerts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Add offline support
+  const [isOffline, setIsOffline] = useState(!navigator.onLine);
+  
+  useEffect(() => {
+    const handleOnline = () => setIsOffline(false);
+    const handleOffline = () => setIsOffline(true);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
 
   useEffect(() => {
     async function load() {
-      const { data, error } = await supabase
-        .from("products")
-        .select("*")
-        .eq("shop_id", shopId);
-      if (!error && data) setProducts(data);
+      try {
+        const { data, error } = await supabase
+          .from("products")
+          .select("*")
+          .eq("shop_id", shopId);
+          
+        if (error) throw error;
+        setProducts(data);
+        localStorage.setItem('cached_products', JSON.stringify(data));
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        // Use cached data if available
+        const cached = localStorage.getItem('cached_products');
+        if (cached) setProducts(JSON.parse(cached));
+      }
     }
     if (shopId) load();
+  }, [shopId]);
+
+  useEffect(() => {
+    async function loadCategories() {
+      try {
+        const { data, error } = await supabase
+          .from("categories")
+          .select("*")
+          .eq("shop_id", shopId);
+          
+        if (error) throw error;
+        setCategories(data);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    }
+    if (shopId) loadCategories();
   }, [shopId]);
 
   const addToCart = (p) => {
@@ -111,6 +158,43 @@ export default function POSProducts() {
     navigate("/pos/checkout", { state: { cart } });
   };
 
+  // Add keyboard shortcuts
+  const handleKeyPress = useCallback((e) => {
+    if (e.key === 'F2') setShowModal(true);
+    if (e.key === 'F4') goToCheckout();
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [handleKeyPress]);
+
+  // Add stock monitoring
+  useEffect(() => {
+    const checkLowStock = () => {
+      const lowStockItems = products.filter(p => p.stock < p.minimum_stock);
+      setStockAlerts(lowStockItems);
+    };
+    checkLowStock();
+  }, [products]);
+
+  const updateCartQuantity = (productId, change) => {
+    setCart((prev) => {
+      return prev.map((item) => {
+        if (item.id === productId) {
+          const newQty = Math.max(0, item.qty + change);
+          return newQty === 0 ? null : { ...item, qty: newQty };
+        }
+        return item;
+      }).filter(Boolean); // Remove items with quantity 0
+    });
+  };
+
+  // Add filtered products
+  const filteredProducts = products.filter(product =>
+    product.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <>
       {/* POS Header/Menu */}
@@ -141,6 +225,17 @@ export default function POSProducts() {
             Udane POS
           </div>
           <nav>
+            <Link
+              to="/pos/dashboard"
+              style={{
+                marginRight: 20,
+                color: "#2f855a",
+                textDecoration: "none",
+                fontWeight: 500,
+              }}
+            >
+              Dashboard
+            </Link>
             <Link
               to="/pos/products"
               style={{
@@ -195,8 +290,55 @@ export default function POSProducts() {
             </button>
           </div>
 
+          {stockAlerts.length > 0 && (
+          <div style={{
+            background: "#fff3cd",
+            padding: "10px",
+            borderRadius: "8px",
+            marginBottom: "20px"
+          }}>
+            <h4>⚠️ Low Stock Alerts</h4>
+            {stockAlerts.map(item => (
+              <div key={item.id}>
+                {item.name}: {item.stock} remaining
+              </div>
+            ))}
+          </div>
+        )}
+
+          {/* Add category filter */}
+          <div style={{marginBottom: "20px"}}>
+            <select 
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              style={{padding: "8px", borderRadius: "6px"}}
+            >
+              <option value="all">All Categories</option>
+              {categories.map(cat => (
+                <option key={cat.id} value={cat.id}>{cat.name}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Add search input */}
+          <div style={{ marginBottom: "20px" }}>
+            <input
+              type="text"
+              placeholder="Search products..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{
+                width: "100%",
+                padding: "10px",
+                borderRadius: "6px",
+                border: "1px solid #e2e8f0",
+                fontSize: "16px"
+              }}
+            />
+          </div>
+
           <div style={{ display: "flex", flexWrap: "wrap", gap: "15px", marginTop: "20px" }}>
-            {products.map((p) => (
+            {filteredProducts.filter(p => selectedCategory === 'all' || p.category_id === selectedCategory).map((p) => (
               <div
                 key={p.id}
                 onClick={() => addToCart(p)}
@@ -222,6 +364,9 @@ export default function POSProducts() {
                 )}
                 <div style={{ fontWeight: "600", color: "#2d3748" }}>{p.name}</div>
                 <div style={{ color: "#4a5568" }}>₹{p.price}</div>
+                <div style={{ color: "#e53e3e", fontSize: "0.9em", marginTop: "5px" }}>
+                  {p.stock < p.minimum_stock ? 'Low stock!' : `${p.stock} in stock`}
+                </div>
               </div>
             ))}
           </div>
@@ -242,28 +387,61 @@ export default function POSProducts() {
     <p style={{ color: "#ffffffff" }}>Your cart is empty.</p>
   ) : (
     cart.map((item) => (
-      <div key={item.id} style={{ marginBottom: "10px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div>
-          {item.name} × {item.qty} = ₹{item.qty * item.price}
+      <div key={item.id} style={{ 
+        marginBottom: "15px", 
+        backgroundColor: "rgba(255,255,255,0.1)",
+        padding: "10px",
+        borderRadius: "8px"
+      }}>
+        <div style={{ color: "#fff", marginBottom: "8px" }}>{item.name}</div>
+        <div style={{ 
+          display: "flex", 
+          justifyContent: "space-between",
+          alignItems: "center"
+        }}>
+          <div style={{ 
+            display: "flex", 
+            alignItems: "center", 
+            gap: "10px" 
+          }}>
+            <button
+              onClick={() => updateCartQuantity(item.id, -1)}
+              style={{
+                backgroundColor: "#2f855a",
+                color: "white",
+                border: "none",
+                borderRadius: "4px",
+                width: "24px",
+                height: "24px",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
+              }}
+            >
+              -
+            </button>
+            <span style={{ color: "#fff" }}>{item.qty}</span>
+            <button
+              onClick={() => updateCartQuantity(item.id, 1)}
+              style={{
+                backgroundColor: "#2f855a",
+                color: "white",
+                border: "none",
+                borderRadius: "4px",
+                width: "24px",
+                height: "24px",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
+              }}
+            >
+              +
+            </button>
+          </div>
+          <div style={{ color: "#fff" }}>₹{item.qty * item.price}</div>
         </div>
-        <button
-          onClick={() => {
-            // Remove the item from cart
-            setCart((prev) => prev.filter((cartItem) => cartItem.id !== item.id));
-          }}
-          style={{
-            backgroundColor: "#e53e3e",
-            border: "none",
-            color: "white",
-            padding: "4px 8px",
-            borderRadius: "4px",
-            cursor: "pointer",
-            fontWeight: "bold",
-            fontSize: "0.8em",
-          }}
-        >
-          Remove
-        </button>
       </div>
     ))
   )}

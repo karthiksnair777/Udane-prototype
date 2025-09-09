@@ -8,6 +8,7 @@ import POSProducts from './pos/POSProducts';
 import POSCheckout from './pos/POSCheckout';
 import POSPrint from './pos/POSPrint';
 import POSOrder from './pos/POSOrder';
+import POSDashboard from './pos/POSDashboard';
 
 // Customer imports
 import CustomerLogin from './customer/CustomerLogin';
@@ -27,6 +28,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <Route path="/pos/checkout" element={<POSCheckout />} />
       <Route path="/pos/print" element={<POSPrint />} />
       <Route path="/pos/order" element={<POSOrder />} />
+      <Route path="/pos/dashboard" element={<POSDashboard />} />
       <Route path="*" element={<div>Page not found</div>} />
 
        <Route path="/customer/login" element={<CustomerLogin />} />

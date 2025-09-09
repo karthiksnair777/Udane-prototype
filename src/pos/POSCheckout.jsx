@@ -1,5 +1,6 @@
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import { supabase } from "../supabaseClient";
+import { QRCodeSVG } from "qrcode.react";
 
 export default function POSCheckout() {
   const location = useLocation();
@@ -39,6 +40,12 @@ export default function POSCheckout() {
 
     navigate("/pos/print", { state: { cart, orderId: order.id } });
   };
+
+  const upiId = "sujithbalan2001@okhdfcbank"; // Replace with your UPI ID
+  const total = cart.reduce((sum, item) => sum + item.qty * item.price, 0);
+
+  // Generate UPI payment URL
+  const upiUrl = `upi://pay?pa=${upiId}&pn=UdanePOS&am=${total}&cu=INR`;
 
   return (
     <>
@@ -143,23 +150,44 @@ export default function POSCheckout() {
           </span>
         </div>
 
-        <button
-          onClick={handleConfirm}
+        <div
           style={{
-            marginTop: "30px",
-            width: "100%",
-            padding: "14px",
-            backgroundColor: "#ffffffff",
-            color: "black",
-            border: "none",
-            borderRadius: "6px",
-            fontWeight: "600",
-            fontSize: "16px",
-            cursor: "pointer",
+            textAlign: "center",
+            marginTop: "20px",
+            padding: "20px",
           }}
         >
-          ✅ Confirm & Print
-        </button>
+          <div
+            style={{
+              margin: "20px auto",
+              padding: "20px",
+              background: "#fff",
+              borderRadius: "10px",
+              width: "fit-content",
+            }}
+          >
+            <h3>Scan to Pay with UPI</h3>
+            <QRCodeSVG value={upiUrl} size={200} level="H" />
+          </div>
+
+          <button
+            onClick={handleConfirm}
+            style={{
+              marginTop: "30px",
+              width: "100%",
+              padding: "14px",
+              backgroundColor: "#ffffffff",
+              color: "black",
+              border: "none",
+              borderRadius: "6px",
+              fontWeight: "600",
+              fontSize: "16px",
+              cursor: "pointer",
+            }}
+          >
+            ✅ Confirm & Print
+          </button>
+        </div>
       </div>
     </>
   );

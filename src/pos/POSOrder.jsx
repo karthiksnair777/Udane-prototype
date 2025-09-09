@@ -6,6 +6,11 @@ export default function POSOrder() {
   const [notification, setNotification] = useState(null);
   const [shopName, setShopName] = useState("");
   const [updatingOrderId, setUpdatingOrderId] = useState(null);
+  const [analytics, setAnalytics] = useState({
+    dailyTotal: 0,
+    monthlyTotal: 0,
+    popularItems: [],
+  });
   const shopId = localStorage.getItem("shop_id");
   const notifiedOrderIds = useRef(new Set());
 
@@ -84,6 +89,46 @@ export default function POSOrder() {
     };
   }, [shopId, shopName]);
 
+  useEffect(() => {
+    async function loadAnalytics() {
+      const today = new Date().toISOString().split("T")[0];
+      const firstDayOfMonth = new Date(
+        new Date().getFullYear(),
+        new Date().getMonth(),
+        1
+      ).toISOString();
+
+      // Get daily total
+      const { data: dailyOrders } = await supabase
+        .from("orders")
+        .select("total")
+        .gte("created_at", today);
+
+      // Get monthly total
+      const { data: monthlyOrders } = await supabase
+        .from("orders")
+        .select("total")
+        .gte("created_at", firstDayOfMonth);
+
+      // Get popular items
+      const { data: items } = await supabase
+        .from("order_items")
+        .select("product_id, quantity")
+        .order("quantity", { ascending: false })
+        .limit(5);
+
+      setAnalytics({
+        dailyTotal:
+          dailyOrders?.reduce((sum, order) => sum + order.total, 0) || 0,
+        monthlyTotal:
+          monthlyOrders?.reduce((sum, order) => sum + order.total, 0) || 0,
+        popularItems: items || [],
+      });
+    }
+
+    loadAnalytics();
+  }, [orders]);
+
   async function handleStatusChange(orderId, newStatus) {
     setUpdatingOrderId(orderId);
     const { data, error } = await supabase
@@ -146,6 +191,25 @@ export default function POSOrder() {
           No orders found.
         </p>
       )}
+
+      {/* Add analytics dashboard */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+          gap: "20px",
+          marginBottom: "30px",
+        }}
+      >
+        <div style={styles.statCard}>
+          <h3>Today's Sales</h3>
+          <div>₹{analytics.dailyTotal}</div>
+        </div>
+        <div style={styles.statCard}>
+          <h3>Monthly Sales</h3>
+          <div>₹{analytics.monthlyTotal}</div>
+        </div>
+      </div>
 
       {orders.map((o) => (
         <div
@@ -236,3 +300,12 @@ export default function POSOrder() {
     </div>
   );
 }
+
+const styles = {
+  statCard: {
+    background: "white",
+    padding: "20px",
+    borderRadius: "10px",
+    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+  },
+};
