@@ -7,15 +7,14 @@ export default function POSProducts() {
   const shopId = localStorage.getItem("shop_id");
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [searchTerm, setSearchTerm] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [newProductName, setNewProductName] = useState("");
   const [newProductPrice, setNewProductPrice] = useState("");
   const [newProductImage, setNewProductImage] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
-  const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [stockAlerts, setStockAlerts] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
 
   // Add offline support
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
@@ -71,87 +70,33 @@ export default function POSProducts() {
     if (shopId) loadCategories();
   }, [shopId]);
 
+  const [isCartVisible, setIsCartVisible] = useState(true);
+
+  // Load cart from localStorage on component mount
+  useEffect(() => {
+    const savedCart = localStorage.getItem('pos_cart');
+    if (savedCart) {
+      setCart(JSON.parse(savedCart));
+    }
+  }, []);
+
+  // Save cart to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('pos_cart', JSON.stringify(cart));
+  }, [cart]);
+
   const addToCart = (p) => {
     setCart((prev) => {
       const existing = prev.find((item) => item.id === p.id);
       if (existing) {
-        return prev.map((item) =>
+        const updated = prev.map((item) =>
           item.id === p.id ? { ...item, qty: item.qty + 1 } : item
         );
+        return updated;
       }
       return [...prev, { ...p, qty: 1 }];
     });
-  };
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setNewProductImage(file);
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => setPreviewUrl(reader.result);
-      reader.readAsDataURL(file);
-    } else {
-      setPreviewUrl("");
-    }
-  };
-
-  const uploadImage = async (file) => {
-    const fileName = `${Date.now()}_${file.name}`;
-    const { data, error } = await supabase.storage
-      .from("product-images")
-      .upload(fileName, file);
-
-    if (error) {
-      console.error("Upload failed:", error.message);
-      return null;
-    }
-
-    const { data: publicUrl } = supabase.storage
-      .from("product-images")
-      .getPublicUrl(fileName);
-
-    return publicUrl?.publicUrl || null;
-  };
-
-  const addNewProduct = async () => {
-    if (!newProductName.trim() || isNaN(newProductPrice) || Number(newProductPrice) <= 0) {
-      alert("Please enter valid product details");
-      return;
-    }
-
-    let imageUrl = null;
-
-    if (newProductImage) {
-      imageUrl = await uploadImage(newProductImage);
-      if (!imageUrl) {
-        alert("Image upload failed");
-        return;
-      }
-    }
-
-    const { data, error } = await supabase
-      .from("products")
-      .insert([
-        {
-          shop_id: shopId,
-          name: newProductName,
-          price: Number(newProductPrice),
-          image_url: imageUrl,
-        },
-      ])
-      .select()
-      .single();
-
-    if (!error && data) {
-      setProducts((prev) => [...prev, data]);
-      setNewProductName("");
-      setNewProductPrice("");
-      setNewProductImage(null);
-      setPreviewUrl("");
-      setShowModal(false);
-    } else {
-      alert("Failed to add product.");
-    }
+    setIsCartVisible(true); // Show cart when adding items
   };
 
   const goToCheckout = () => {
@@ -160,7 +105,6 @@ export default function POSProducts() {
 
   // Add keyboard shortcuts
   const handleKeyPress = useCallback((e) => {
-    if (e.key === 'F2') setShowModal(true);
     if (e.key === 'F4') goToCheckout();
   }, []);
 
@@ -168,15 +112,6 @@ export default function POSProducts() {
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [handleKeyPress]);
-
-  // Add stock monitoring
-  useEffect(() => {
-    const checkLowStock = () => {
-      const lowStockItems = products.filter(p => p.stock < p.minimum_stock);
-      setStockAlerts(lowStockItems);
-    };
-    checkLowStock();
-  }, [products]);
 
   const updateCartQuantity = (productId, change) => {
     setCart((prev) => {
@@ -190,9 +125,108 @@ export default function POSProducts() {
     });
   };
 
-  // Add filtered products
-  const filteredProducts = products.filter(product =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
+  // Modify filtered products to exclude out of stock items
+  const filteredProducts = products
+    .filter(product => 
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) && 
+      product.stock > 0
+    );
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setNewProductImage(file);
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewUrl(reader.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setPreviewUrl("");
+    }
+  };
+
+  const addNewProduct = async () => {
+    if (!newProductName || !newProductPrice || !newProductImage) {
+      alert("Please fill in all fields.");
+      return;
+    }
+
+    try {
+      // Upload image to Supabase Storage
+      const { data: uploadData, error: uploadError } = await supabase
+        .storage
+        .from('product-images')
+        .upload(`public/${newProductImage.name}`, newProductImage);
+
+      if (uploadError) throw uploadError;
+
+      // Get the public URL of the uploaded image
+      const imageUrl = `https://your-supabase-url.supabase.co/storage/v1/object/public/product-images/public/${newProductImage.name}`;
+
+      // Insert new product into the database
+      const { error } = await supabase
+        .from("products")
+        .insert([
+          {
+            name: newProductName,
+            price: newProductPrice,
+            image_url: imageUrl,
+            shop_id: shopId,
+            stock: 0 // Only include stock field
+          }
+        ]);
+
+      if (error) throw error;
+
+      // Update local state
+      setProducts((prev) => [
+        ...prev,
+        {
+          id: Date.now(), // Temporary ID, Supabase will assign a real one
+          name: newProductName,
+          price: newProductPrice,
+          image_url: imageUrl,
+          shop_id: shopId,
+          stock: 0
+        }
+      ]);
+
+      // Clear form
+      setNewProductName("");
+      setNewProductPrice("");
+      setNewProductImage(null);
+      setPreviewUrl("");
+      setShowModal(false);
+    } catch (error) {
+      console.error('Error adding new product:', error);
+    }
+  };
+
+  // Add cart toggle button
+  const CartToggleButton = () => (
+    <button
+      onClick={() => setIsCartVisible(!isCartVisible)}
+      style={{
+        position: 'fixed',
+        right: isCartVisible ? '320px' : '20px',
+        bottom: '20px',
+        backgroundColor: '#38a169',
+        color: 'white',
+        border: 'none',
+        borderRadius: '50%',
+        width: '50px',
+        height: '50px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        cursor: 'pointer',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+        zIndex: 1000,
+      }}
+    >
+      🛒 {cart.length > 0 && <span>({cart.reduce((sum, item) => sum + item.qty, 0)})</span>}
+    </button>
   );
 
   return (
@@ -248,6 +282,17 @@ export default function POSProducts() {
               Products
             </Link>
             <Link
+              to="/pos/manage-products"
+              style={{
+                marginRight: 20,
+                color: "#2f855a",
+                textDecoration: "none",
+                fontWeight: 500,
+              }}
+            >
+              Manage Products
+            </Link>
+            <Link
               to="/pos/order"
               style={{
                 color: "#2f855a",
@@ -262,49 +307,19 @@ export default function POSProducts() {
       </header>
 
       {/* Main Layout */}
-      <div
-        style={{
-          display: "flex",
-          minHeight: "100vh",
-          backgroundColor: "#ffffffff",
-          fontFamily: "'Segoe UI', sans-serif",
-        }}
-      >
-        {/* Product List */}
-        <div style={{ flex: 2, padding: "30px" }}>
+      <div style={{ display: "flex", minHeight: "100vh", backgroundColor: "#ffffffff" }}>
+        {/* Product List - adjust width when cart is visible */}
+        <div style={{ 
+          flex: 1,
+          padding: "30px",
+          marginRight: isCartVisible ? '300px' : '0',
+          transition: 'margin-right 0.3s ease'
+        }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <h2 style={{ color: "#2f855a" }}>Products</h2>
-            <button
-              onClick={() => setShowModal(true)}
-              style={{
-                padding: "10px 16px",
-                backgroundColor: "#38a169",
-                color: "white",
-                border: "none",
-                borderRadius: "6px",
-                fontWeight: "600",
-                cursor: "pointer",
-              }}
-            >
-              + Add Product
-            </button>
           </div>
 
-          {stockAlerts.length > 0 && (
-          <div style={{
-            background: "#fff3cd",
-            padding: "10px",
-            borderRadius: "8px",
-            marginBottom: "20px"
-          }}>
-            <h4>⚠️ Low Stock Alerts</h4>
-            {stockAlerts.map(item => (
-              <div key={item.id}>
-                {item.name}: {item.stock} remaining
-              </div>
-            ))}
-          </div>
-        )}
+          {/* Remove stockAlerts div */}
 
           {/* Add category filter */}
           <div style={{marginBottom: "20px"}}>
@@ -365,140 +380,120 @@ export default function POSProducts() {
                 <div style={{ fontWeight: "600", color: "#2d3748" }}>{p.name}</div>
                 <div style={{ color: "#4a5568" }}>₹{p.price}</div>
                 <div style={{ color: "#e53e3e", fontSize: "0.9em", marginTop: "5px" }}>
-                  {p.stock < p.minimum_stock ? 'Low stock!' : `${p.stock} in stock`}
+                  {p.stock === 0 ? 'Out of stock' : `${p.stock} in stock`}
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Cart */}
-        <div
-  style={{
-    flex: 1,
-    backgroundColor: "#38a169",
-    padding: "30px",
-    borderLeft: "3px solid #ffffffff",
-  }}
->
-  <h3 style={{ color: "#ffffffff", marginBottom: "20px" }}>🛒 Cart</h3>
-
-  {cart.length === 0 ? (
-    <p style={{ color: "#ffffffff" }}>Your cart is empty.</p>
-  ) : (
-    cart.map((item) => (
-      <div key={item.id} style={{ 
-        marginBottom: "15px", 
-        backgroundColor: "rgba(255,255,255,0.1)",
-        padding: "10px",
-        borderRadius: "8px"
-      }}>
-        <div style={{ color: "#fff", marginBottom: "8px" }}>{item.name}</div>
-        <div style={{ 
-          display: "flex", 
-          justifyContent: "space-between",
-          alignItems: "center"
+        {/* Floating Cart */}
+        <CartToggleButton />
+        
+        {/* Sliding Cart Panel */}
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          right: isCartVisible ? 0 : '-300px',
+          width: '300px',
+          height: '100vh',
+          backgroundColor: "#38a169",
+          padding: "30px",
+          transition: 'right 0.3s ease',
+          overflowY: 'auto',
+          boxShadow: '-2px 0 8px rgba(0,0,0,0.1)',
+          zIndex: 999,
         }}>
-          <div style={{ 
-            display: "flex", 
-            alignItems: "center", 
-            gap: "10px" 
+          {/* Cart Section */}
+          <div style={{
+            flex: 1,
+            backgroundColor: "#38a169",
+            padding: "30px",
+            borderLeft: "3px solid #ffffffff",
           }}>
+            <h3 style={{ color: "#ffffffff", marginBottom: "20px" }}>🛒 Cart</h3>
+
+            {cart.length === 0 ? (
+              <p style={{ color: "#ffffffff" }}>Your cart is empty.</p>
+            ) : (
+              cart.map((item) => (
+                <div key={item.id} style={{ 
+                  marginBottom: "15px", 
+                  backgroundColor: "rgba(255,255,255,0.1)",
+                  padding: "10px",
+                  borderRadius: "8px"
+                }}>
+                  <div style={{ color: "#fff", marginBottom: "8px" }}>{item.name}</div>
+                  <div style={{ 
+                    display: "flex", 
+                    justifyContent: "space-between", 
+                    alignItems: "center" 
+                  }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          updateCartQuantity(item.id, -1);
+                        }}
+                        style={styles.quantityButton}
+                      >
+                        -
+                      </button>
+                      <span style={{ color: "#fff" }}>{item.qty}</span>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          updateCartQuantity(item.id, 1);
+                        }}
+                        style={styles.quantityButton}
+                      >
+                        +
+                      </button>
+                    </div>
+                    <div style={{ color: "#fff" }}>₹{item.qty * item.price}</div>
+                  </div>
+                </div>
+              ))
+            )}
+
+            <hr style={{ margin: "20px 0" }} />
+            <strong style={{ color: "#fff" }}>
+              Total: ₹{cart.reduce((sum, item) => sum + item.qty * item.price, 0)}
+            </strong>
+            
             <button
-              onClick={() => updateCartQuantity(item.id, -1)}
-              style={{
-                backgroundColor: "#2f855a",
-                color: "white",
-                border: "none",
-                borderRadius: "4px",
-                width: "24px",
-                height: "24px",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center"
-              }}
+              onClick={goToCheckout}
+              disabled={cart.length === 0}
+              style={styles.checkoutButton}
             >
-              -
-            </button>
-            <span style={{ color: "#fff" }}>{item.qty}</span>
-            <button
-              onClick={() => updateCartQuantity(item.id, 1)}
-              style={{
-                backgroundColor: "#2f855a",
-                color: "white",
-                border: "none",
-                borderRadius: "4px",
-                width: "24px",
-                height: "24px",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center"
-              }}
-            >
-              +
+              Proceed to Checkout
             </button>
           </div>
-          <div style={{ color: "#fff" }}>₹{item.qty * item.price}</div>
         </div>
-      </div>
-    ))
-  )}
-
-  <hr style={{ margin: "20px 0" }} />
-  <strong>
-    Total: ₹
-    {cart.reduce((sum, item) => sum + item.qty * item.price, 0)}
-  </strong>
-  <br />
-  <button
-    onClick={goToCheckout}
-    disabled={cart.length === 0}
-    style={{
-      marginTop: "20px",
-      padding: "12px 18px",
-      backgroundColor: "#2f855a",
-      color: "white",
-      border: "none",
-      borderRadius: "6px",
-      fontWeight: "bold",
-      width: "100%",
-      cursor: cart.length === 0 ? "not-allowed" : "pointer",
-      opacity: cart.length === 0 ? 0.6 : 1,
-    }}
-  >
-    Proceed to Checkout
-  </button>
-</div>
       </div>
 
       {/* Modal */}
       {showModal && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            backgroundColor: "rgba(0,0,0,0.4)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 999,
-          }}
-        >
-          <div
-            style={{
-              background: "#fff",
-              padding: "30px",
-              borderRadius: "10px",
-              width: "90%",
-              maxWidth: "400px",
-              boxShadow: "0 5px 15px rgba(0,0,0,0.2)",
-            }}
-          >
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100vw",
+          height: "100vh",
+          backgroundColor: "rgba(0,0,0,0.4)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 999,
+        }}>
+          <div style={{
+            background: "#fff",
+            padding: "30px",
+            borderRadius: "10px",
+            width: "90%",
+            maxWidth: "400px",
+            boxShadow: "0 5px 15px rgba(0,0,0,0.2)",
+          }}>
             <h3 style={{ marginBottom: "20px", color: "#2f855a" }}>Add New Product</h3>
 
             <input
@@ -583,3 +578,30 @@ export default function POSProducts() {
     </>
   );
 }
+
+const styles = {
+  quantityButton: {
+    backgroundColor: "#2f855a",
+    color: "white",
+    border: "none",
+    borderRadius: "4px",
+    width: "24px",
+    height: "24px",
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  checkoutButton: {
+    marginTop: "20px",
+    padding: "12px 18px",
+    backgroundColor: "#2f855a",
+    color: "white",
+    border: "none",
+    borderRadius: "6px",
+    fontWeight: "bold",
+    width: "100%",
+    cursor: "pointer",
+    opacity: 1
+  }
+};
