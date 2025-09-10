@@ -1,9 +1,40 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { supabase } from "../supabaseClient";
 
 export default function POSHeader() {
   const location = useLocation();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [shopInfo, setShopInfo] = useState(null);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const shopId = localStorage.getItem("shop_id");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    async function getShopInfo() {
+      if (!shopId) return;
+      
+      const { data, error } = await supabase
+        .from('shops')
+        .select('name')
+        .eq('id', shopId)
+        .single();
+        
+      if (!error && data) {
+        setShopInfo(data);
+      }
+    }
+    getShopInfo();
+  }, [shopId]);
 
   const isActive = (path) => location.pathname === path;
+
+  const handleLogout = () => {
+    localStorage.removeItem('shop_id');
+    localStorage.removeItem('pos_cart');
+    // Clear any other POS-related data from localStorage
+    navigate('/pos/login');
+  };
 
   return (
     <header style={styles.header}>
@@ -11,44 +42,62 @@ export default function POSHeader() {
         <Link to="/pos/dashboard" style={styles.logo}>
           Udane POS
         </Link>
-        <nav style={styles.nav}>
-          <Link
-            to="/pos/dashboard"
-            style={{
-              ...styles.navLink,
-              ...(isActive('/pos/dashboard') && styles.activeNavLink)
-            }}
-          >
-            Dashboard
-          </Link>
-          <Link
-            to="/pos/products"
-            style={{
-              ...styles.navLink,
-              ...(isActive('/pos/products') && styles.activeNavLink)
-            }}
-          >
-            Products
-          </Link>
-          <Link
-            to="/pos/manage-products"
-            style={{
-              ...styles.navLink,
-              ...(isActive('/pos/manage-products') && styles.activeNavLink)
-            }}
-          >
-            Manage Products
-          </Link>
-          <Link
-            to="/pos/order"
-            style={{
-              ...styles.navLink,
-              ...(isActive('/pos/order') && styles.activeNavLink)
-            }}
-          >
-            Orders
-          </Link>
-        </nav>
+
+        <div style={styles.rightSection}>
+          {/* Shop Profile with Dropdown */}
+          <div style={styles.profile} onClick={() => setIsProfileOpen(!isProfileOpen)}>
+            <div style={styles.profileIcon}>👤</div>
+            <div style={styles.shopName}>
+              {shopInfo?.name || 'Loading...'}
+            </div>
+            {isProfileOpen && (
+              <div style={styles.profileDropdown}>
+                <div style={styles.dropdownItem} onClick={handleLogout}>
+                  Logout
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Hamburger Button */}
+          <button onClick={() => setIsMenuOpen(!isMenuOpen)} style={styles.menuButton}>
+            <span style={styles.hamburger}>☰</span>
+          </button>
+        </div>
+
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <nav style={styles.mobileNav}>
+            <Link 
+              to="/pos/dashboard" 
+              style={styles.navLink}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Dashboard
+            </Link>
+            <Link 
+              to="/pos/products" 
+              style={styles.navLink}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Products
+            </Link>
+            <Link 
+              to="/pos/manage-products" 
+              style={styles.navLink}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Manage Products
+            </Link>
+            <Link 
+              to="/pos/order" 
+              style={styles.navLink}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Manage Orders
+            </Link>
+          </nav>
+        )}
       </div>
     </header>
   );
@@ -70,7 +119,8 @@ const styles = {
     padding: '0 20px',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    position: 'relative'
   },
   logo: {
     fontSize: '1.8em',
@@ -78,20 +128,87 @@ const styles = {
     color: '#2f855a',
     textDecoration: 'none'
   },
-  nav: {
+  menuButton: {
+    background: 'none',
+    border: 'none',
+    fontSize: '24px',
+    color: '#2f855a',
+    cursor: 'pointer',
+    padding: '8px',
     display: 'flex',
-    gap: '20px'
+    alignItems: 'center'
+  },
+  hamburger: {
+    fontSize: '24px',
+    lineHeight: 1
+  },
+  mobileNav: {
+    position: 'absolute',
+    top: '100%',
+    left: 0,
+    right: 0,
+    background: 'white',
+    padding: '8px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '4px',
+    boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+    zIndex: 1000
   },
   navLink: {
     color: '#2f855a',
     textDecoration: 'none',
-    fontWeight: 500,
-    padding: '8px 12px',
-    borderRadius: '6px',
-    transition: 'all 0.2s'
+    padding: '12px 16px',
+    display: 'block',
+    borderRadius: '4px',
+    transition: 'all 0.2s ease',
+    fontWeight: '500'
   },
-  activeNavLink: {
-    backgroundColor: '#2f855a',
-    color: 'white'
+  rightSection: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '20px'
+  },
+  profile: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    padding: '8px',
+    borderRadius: '6px',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    backgroundColor: 'rgba(47, 133, 90, 0.1)'
+  },
+  profileIcon: {
+    fontSize: '20px',
+    color: '#2f855a'
+  },
+  shopName: {
+    color: '#2f855a',
+    fontWeight: '500',
+    fontSize: '14px'
+  },
+  profileDropdown: {
+    position: 'absolute',
+    top: '100%',
+    right: 0,
+    backgroundColor: 'white',
+    borderRadius: '6px',
+    boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+    padding: '8px 0',
+    marginTop: '4px',
+    minWidth: '150px',
+    zIndex: 1001
+  },
+  dropdownItem: {
+    padding: '8px 16px',
+    color: '#e53e3e',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    '&:hover': {
+      backgroundColor: '#fff5f5'
+    }
   }
 };
+
+
