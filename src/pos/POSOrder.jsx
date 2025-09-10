@@ -1,5 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { supabase } from "../supabaseClient";
+import POSHeader from "../components/POSHeader";
+
 
 export default function POSOrder() {
   const [orders, setOrders] = useState([]);
@@ -147,157 +149,160 @@ export default function POSOrder() {
   }
 
   return (
-    <div
-      style={{
-        maxWidth: 720,
-        margin: "40px auto",
-        padding: 24,
-        fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-      }}
-    >
-      <h2
-        style={{
-          marginBottom: 20,
-          color: "#2f855a",
-          fontWeight: "700",
-          fontSize: "2rem",
-          letterSpacing: "0.05em",
-        }}
-      >
-        Incoming Orders (Realtime)
-      </h2>
-
-      {notification && (
-        <div
-          role="alert"
-          style={{
-            background: "#38a169",
-            color: "white",
-            padding: "14px 20px",
-            borderRadius: 8,
-            marginBottom: 20,
-            fontWeight: "600",
-            boxShadow: "0 3px 10px rgba(0,0,0,0.12)",
-            fontSize: "1.1rem",
-            userSelect: "none",
-          }}
-        >
-          {notification}
-        </div>
-      )}
-
-      {orders.length === 0 && (
-        <p style={{ color: "#718096", fontSize: "1.1rem" }}>
-          No orders found.
-        </p>
-      )}
-
-      {/* Add analytics dashboard */}
+    <>
+      <POSHeader />
       <div
         style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-          gap: "20px",
-          marginBottom: "30px",
+          maxWidth: 720,
+          margin: "40px auto",
+          padding: 24,
+          fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
         }}
       >
-        <div style={styles.statCard}>
-          <h3>Today's Sales</h3>
-          <div>₹{analytics.dailyTotal}</div>
-        </div>
-        <div style={styles.statCard}>
-          <h3>Monthly Sales</h3>
-          <div>₹{analytics.monthlyTotal}</div>
-        </div>
-      </div>
-
-      {orders.map((o) => (
-        <div
-          key={o.id}
+        <h2
           style={{
-            border: "1px solid #cbd5e0",
-            borderRadius: 12,
-            padding: 18,
-            marginBottom: 16,
-            backgroundColor: "#f9fafb",
-            boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+            marginBottom: 20,
+            color: "#2f855a",
+            fontWeight: "700",
+            fontSize: "2rem",
+            letterSpacing: "0.05em",
           }}
         >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              marginBottom: 8,
-              fontWeight: "700",
-              fontSize: "1.15rem",
-              color: "#2d3748",
-            }}
-          >
-            <span>Order #{o.id}</span>
-            <span style={{ color: "#38a169" }}>₹{o.total}</span>
-          </div>
+          Incoming Orders (Realtime)
+        </h2>
 
+        {notification && (
           <div
+            role="alert"
             style={{
-              fontSize: "0.95rem",
-              color: "#4a5568",
-              marginBottom: 8,
+              background: "#38a169",
+              color: "white",
+              padding: "14px 20px",
+              borderRadius: 8,
+              marginBottom: 20,
+              fontWeight: "600",
+              boxShadow: "0 3px 10px rgba(0,0,0,0.12)",
+              fontSize: "1.1rem",
+              userSelect: "none",
             }}
           >
-            From Customer: <strong>{o.from_customer ? "Yes" : "No"}</strong>
+            {notification}
           </div>
+        )}
 
+        {orders.length === 0 && (
+          <p style={{ color: "#718096", fontSize: "1.1rem" }}>
+            No orders found.
+          </p>
+        )}
+
+        {/* Add analytics dashboard */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+            gap: "20px",
+            marginBottom: "30px",
+          }}
+        >
+          <div style={styles.statCard}>
+            <h3>Today's Sales</h3>
+            <div>₹{analytics.dailyTotal}</div>
+          </div>
+          <div style={styles.statCard}>
+            <h3>Monthly Sales</h3>
+            <div>₹{analytics.monthlyTotal}</div>
+          </div>
+        </div>
+
+        {orders.map((o) => (
           <div
+            key={o.id}
             style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 12,
-              marginBottom: 8,
-              fontSize: "1rem",
+              border: "1px solid #cbd5e0",
+              borderRadius: 12,
+              padding: 18,
+              marginBottom: 16,
+              backgroundColor: "#f9fafb",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
             }}
           >
-            <label htmlFor={`status-${o.id}`} style={{ fontWeight: "600" }}>
-              Status:
-            </label>
-            <select
-              id={`status-${o.id}`}
-              value={o.status || "Pending"}
-              disabled={updatingOrderId === o.id}
-              onChange={(e) => handleStatusChange(o.id, e.target.value)}
+            <div
               style={{
-                padding: "6px 12px",
-                borderRadius: 6,
-                border: "1px solid #cbd5e0",
-                cursor: updatingOrderId === o.id ? "not-allowed" : "pointer",
-                fontWeight: "600",
+                display: "flex",
+                justifyContent: "space-between",
+                marginBottom: 8,
+                fontWeight: "700",
+                fontSize: "1.15rem",
                 color: "#2d3748",
               }}
             >
-              <option value="Pending">Pending</option>
-              <option value="Processing">Processing</option>
-              <option value="In Transit">In Transit</option>
-              <option value="Done">Done</option> {/* Added Done option */}
-              <option value="Cancelled">Cancelled</option>
-            </select>
+              <span>Order #{o.id}</span>
+              <span style={{ color: "#38a169" }}>₹{o.total}</span>
+            </div>
 
-            {updatingOrderId === o.id && (
-              <span style={{ color: "#718096", fontStyle: "italic" }}>
-                Updating...
-              </span>
-            )}
-          </div>
+            <div
+              style={{
+                fontSize: "0.95rem",
+                color: "#4a5568",
+                marginBottom: 8,
+              }}
+            >
+              From Customer: <strong>{o.from_customer ? "Yes" : "No"}</strong>
+            </div>
 
-          <div
-            style={{
-              fontSize: "0.85rem",
-              color: "#a0aec0",
-            }}
-          >
-            Placed At: {new Date(o.created_at).toLocaleString()}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+                marginBottom: 8,
+                fontSize: "1rem",
+              }}
+            >
+              <label htmlFor={`status-${o.id}`} style={{ fontWeight: "600" }}>
+                Status:
+              </label>
+              <select
+                id={`status-${o.id}`}
+                value={o.status || "Pending"}
+                disabled={updatingOrderId === o.id}
+                onChange={(e) => handleStatusChange(o.id, e.target.value)}
+                style={{
+                  padding: "6px 12px",
+                  borderRadius: 6,
+                  border: "1px solid #cbd5e0",
+                  cursor: updatingOrderId === o.id ? "not-allowed" : "pointer",
+                  fontWeight: "600",
+                  color: "#2d3748",
+                }}
+              >
+                <option value="Pending">Pending</option>
+                <option value="Processing">Processing</option>
+                <option value="In Transit">In Transit</option>
+                <option value="Done">Done</option> {/* Added Done option */}
+                <option value="Cancelled">Cancelled</option>
+              </select>
+
+              {updatingOrderId === o.id && (
+                <span style={{ color: "#718096", fontStyle: "italic" }}>
+                  Updating...
+                </span>
+              )}
+            </div>
+
+            <div
+              style={{
+                fontSize: "0.85rem",
+                color: "#a0aec0",
+              }}
+            >
+              Placed At: {new Date(o.created_at).toLocaleString()}
+            </div>
           </div>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
+    </>
   );
 }
 

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "../supabaseClient";
+import POSHeader from "../components/POSHeader";
 
 export default function POSManageProducts() {
   const shopId = localStorage.getItem("shop_id");
@@ -132,81 +133,7 @@ export default function POSManageProducts() {
 
   return (
     <>
-      {/* POS Header/Menu */}
-      <header
-        style={{
-          background: "#ffffffff",
-          padding: "16px 0",
-          marginBottom: "20px",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-        }}
-      >
-        <div
-          style={{
-            maxWidth: 900,
-            margin: "0 auto",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <div
-            style={{
-              fontWeight: "bold",
-              fontSize: "1.5em",
-              color: "#2f855a",
-            }}
-          >
-            Udane POS
-          </div>
-          <nav>
-            <Link
-              to="/pos/dashboard"
-              style={{
-                marginRight: 20,
-                color: "#2f855a",
-                textDecoration: "none",
-                fontWeight: 500,
-              }}
-            >
-              Dashboard
-            </Link>
-            <Link
-              to="/pos/products"
-              style={{
-                marginRight: 20,
-                color: "#2f855a",
-                textDecoration: "none",
-                fontWeight: 500,
-              }}
-            >
-              Products
-            </Link>
-            <Link
-              to="/pos/manage-products"
-              style={{
-                marginRight: 20,
-                color: "#2f855a",
-                textDecoration: "none",
-                fontWeight: 500,
-              }}
-            >
-              Manage Products
-            </Link>
-            <Link
-              to="/pos/order"
-              style={{
-                color: "#2f855a",
-                textDecoration: "none",
-                fontWeight: 500,
-              }}
-            >
-              Orders
-            </Link>
-          </nav>
-        </div>
-      </header>
-
+      <POSHeader />
       <div style={styles.container}>
         <div style={styles.headerBar}>
           <h2>Manage Products</h2>
@@ -296,9 +223,9 @@ export default function POSManageProducts() {
 
 const styles = {
   container: {
-    padding: "20px",
-    maxWidth: "1200px",
-    margin: "0 auto"
+    maxWidth: '1400px',
+    margin: '0 auto',
+    padding: '20px'
   },
   headerBar: {
     display: "flex",

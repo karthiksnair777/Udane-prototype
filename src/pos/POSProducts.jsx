@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
+import POSHeader from "../components/POSHeader";
 
 export default function POSProducts() {
   const navigate = useNavigate();
@@ -89,10 +90,14 @@ export default function POSProducts() {
     setCart((prev) => {
       const existing = prev.find((item) => item.id === p.id);
       if (existing) {
-        const updated = prev.map((item) =>
+        // Check if adding one more would exceed stock
+        if (existing.qty >= p.stock) {
+          alert(`Only ${p.stock} items available in stock`);
+          return prev;
+        }
+        return prev.map((item) =>
           item.id === p.id ? { ...item, qty: item.qty + 1 } : item
         );
-        return updated;
       }
       return [...prev, { ...p, qty: 1 }];
     });
@@ -117,7 +122,19 @@ export default function POSProducts() {
     setCart((prev) => {
       return prev.map((item) => {
         if (item.id === productId) {
+          // Find the product to check stock
+          const product = products.find(p => p.id === productId);
+          if (!product) return item;
+
+          // Calculate new quantity
           const newQty = Math.max(0, item.qty + change);
+          
+          // Check stock limit when increasing
+          if (change > 0 && newQty > product.stock) {
+            alert(`Only ${product.stock} items available in stock`);
+            return item;
+          }
+
           return newQty === 0 ? null : { ...item, qty: newQty };
         }
         return item;
@@ -231,244 +248,129 @@ export default function POSProducts() {
 
   return (
     <>
-      {/* POS Header/Menu */}
-      <header
-        style={{
-          background: "#ffffffff",
-          padding: "16px 0",
-          marginBottom: "20px",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-        }}
-      >
-        <div
-          style={{
-            maxWidth: 900,
-            margin: "0 auto",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <div
-            style={{
-              fontWeight: "bold",
-              fontSize: "1.5em",
-              color: "#2f855a",
-            }}
-          >
-            Udane POS
-          </div>
-          <nav>
-            <Link
-              to="/pos/dashboard"
-              style={{
-                marginRight: 20,
-                color: "#2f855a",
-                textDecoration: "none",
-                fontWeight: 500,
-              }}
-            >
-              Dashboard
-            </Link>
-            <Link
-              to="/pos/products"
-              style={{
-                marginRight: 20,
-                color: "#2f855a",
-                textDecoration: "none",
-                fontWeight: 500,
-              }}
-            >
-              Products
-            </Link>
-            <Link
-              to="/pos/manage-products"
-              style={{
-                marginRight: 20,
-                color: "#2f855a",
-                textDecoration: "none",
-                fontWeight: 500,
-              }}
-            >
-              Manage Products
-            </Link>
-            <Link
-              to="/pos/order"
-              style={{
-                color: "#2f855a",
-                textDecoration: "none",
-                fontWeight: 500,
-              }}
-            >
-              Orders
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <POSHeader />
+      <div style={styles.mainContainer}>
+        <div style={styles.contentContainer}>
+          <div style={styles.productSection}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <h2 style={{ color: "#2f855a" }}>Products</h2>
+            </div>
 
-      {/* Main Layout */}
-      <div style={{ display: "flex", minHeight: "100vh", backgroundColor: "#ffffffff" }}>
-        {/* Product List - adjust width when cart is visible */}
-        <div style={{ 
-          flex: 1,
-          padding: "30px",
-          marginRight: isCartVisible ? '300px' : '0',
-          transition: 'margin-right 0.3s ease'
-        }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <h2 style={{ color: "#2f855a" }}>Products</h2>
-          </div>
+            {/* Remove stockAlerts div */}
 
-          {/* Remove stockAlerts div */}
-
-          {/* Add category filter */}
-          <div style={{marginBottom: "20px"}}>
-            <select 
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              style={{padding: "8px", borderRadius: "6px"}}
-            >
-              <option value="all">All Categories</option>
-              {categories.map(cat => (
-                <option key={cat.id} value={cat.id}>{cat.name}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Add search input */}
-          <div style={{ marginBottom: "20px" }}>
-            <input
-              type="text"
-              placeholder="Search products..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              style={{
-                width: "100%",
-                padding: "10px",
-                borderRadius: "6px",
-                border: "1px solid #e2e8f0",
-                fontSize: "16px"
-              }}
-            />
-          </div>
-
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "15px", marginTop: "20px" }}>
-            {filteredProducts.filter(p => selectedCategory === 'all' || p.category_id === selectedCategory).map((p) => (
-              <div
-                key={p.id}
-                onClick={() => addToCart(p)}
-                style={{
-                  backgroundColor: "white",
-                  borderRadius: "10px",
-                  padding: "15px",
-                  minWidth: "160px",
-                  boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-                  cursor: "pointer",
-                  transition: "transform 0.2s ease",
-                  textAlign: "center",
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.03)")}
-                onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            {/* Add category filter */}
+            <div style={styles.filterBar}>
+              <select 
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                style={styles.categorySelect}
               >
-                {p.image_url && (
-                  <img
-                    src={p.image_url}
-                    alt={p.name}
-                    style={{ width: "100%", height: "100px", objectFit: "cover", borderRadius: "6px", marginBottom: "10px" }}
-                  />
-                )}
-                <div style={{ fontWeight: "600", color: "#2d3748" }}>{p.name}</div>
-                <div style={{ color: "#4a5568" }}>₹{p.price}</div>
-                <div style={{ color: "#e53e3e", fontSize: "0.9em", marginTop: "5px" }}>
-                  {p.stock === 0 ? 'Out of stock' : `${p.stock} in stock`}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+                <option value="all">All Categories</option>
+                {categories.map(cat => (
+                  <option key={cat.id} value={cat.id}>{cat.name}</option>
+                ))}
+              </select>
+            </div>
 
-        {/* Floating Cart */}
-        <CartToggleButton />
-        
-        {/* Sliding Cart Panel */}
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          right: isCartVisible ? 0 : '-300px',
-          width: '300px',
-          height: '100vh',
-          backgroundColor: "#38a169",
-          padding: "30px",
-          transition: 'right 0.3s ease',
-          overflowY: 'auto',
-          boxShadow: '-2px 0 8px rgba(0,0,0,0.1)',
-          zIndex: 999,
-        }}>
-          {/* Cart Section */}
-          <div style={{
-            flex: 1,
-            backgroundColor: "#38a169",
-            padding: "30px",
-            borderLeft: "3px solid #ffffffff",
-          }}>
-            <h3 style={{ color: "#ffffffff", marginBottom: "20px" }}>🛒 Cart</h3>
+            {/* Add search input */}
+            <div style={{ marginBottom: "20px" }}>
+              <input
+                type="text"
+                placeholder="Search products..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                style={styles.searchInput}
+              />
+            </div>
 
-            {cart.length === 0 ? (
-              <p style={{ color: "#ffffffff" }}>Your cart is empty.</p>
-            ) : (
-              cart.map((item) => (
-                <div key={item.id} style={{ 
-                  marginBottom: "15px", 
-                  backgroundColor: "rgba(255,255,255,0.1)",
-                  padding: "10px",
-                  borderRadius: "8px"
-                }}>
-                  <div style={{ color: "#fff", marginBottom: "8px" }}>{item.name}</div>
-                  <div style={{ 
-                    display: "flex", 
-                    justifyContent: "space-between", 
-                    alignItems: "center" 
-                  }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          updateCartQuantity(item.id, -1);
-                        }}
-                        style={styles.quantityButton}
-                      >
-                        -
-                      </button>
-                      <span style={{ color: "#fff" }}>{item.qty}</span>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          updateCartQuantity(item.id, 1);
-                        }}
-                        style={styles.quantityButton}
-                      >
-                        +
-                      </button>
-                    </div>
-                    <div style={{ color: "#fff" }}>₹{item.qty * item.price}</div>
+            <div style={styles.productGrid}>
+              {filteredProducts.filter(p => selectedCategory === 'all' || p.category_id === selectedCategory).map((p) => (
+                <div
+                  key={p.id}
+                  onClick={() => addToCart(p)}
+                  style={styles.productCard}
+                  onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.03)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                >
+                  {p.image_url && (
+                    <img
+                      src={p.image_url}
+                      alt={p.name}
+                      style={{ width: "100%", height: "100px", objectFit: "cover", borderRadius: "6px", marginBottom: "10px" }}
+                    />
+                  )}
+                  <div style={{ fontWeight: "600", color: "#2d3748" }}>{p.name}</div>
+                  <div style={{ color: "#4a5568" }}>₹{p.price}</div>
+                  <div style={{ color: "#e53e3e", fontSize: "0.9em", marginTop: "5px" }}>
+                    {p.stock === 0 ? 'Out of stock' : `${p.stock} in stock`}
                   </div>
                 </div>
-              ))
-            )}
-
-            <hr style={{ margin: "20px 0" }} />
-            <strong style={{ color: "#fff" }}>
-              Total: ₹{cart.reduce((sum, item) => sum + item.qty * item.price, 0)}
-            </strong>
-            
-            <button
-              onClick={goToCheckout}
-              disabled={cart.length === 0}
-              style={styles.checkoutButton}
-            >
-              Proceed to Checkout
-            </button>
+              ))}
+            </div>
           </div>
+
+          <div style={{
+            position: 'fixed',
+            top: 0,
+            right: isCartVisible ? 0 : '-340px',
+            width: '340px',
+            height: '100vh',
+            backgroundColor: '#38a169',
+            display: 'flex',
+            flexDirection: 'column',
+            zIndex: 999,
+            transition: 'right 0.3s ease'
+          }}>
+            <div style={{ padding: '20px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+              <h3 style={{ color: "#fff", margin: 0 }}>🛒 Cart</h3>
+            </div>
+
+            <div style={{ flex: 1, overflowY: 'auto', padding: '20px' }}>
+              {cart.length === 0 ? (
+                <p style={{ color: "#fff" }}>Your cart is empty.</p>
+              ) : (
+                cart.map((item) => (
+                  <div key={item.id} style={{ 
+                    backgroundColor: 'rgba(255,255,255,0.1)',
+                    borderRadius: '8px',
+                    padding: '15px',
+                    marginBottom: '10px'
+                  }}>
+                    <div style={{ color: "#fff", marginBottom: "8px" }}>{item.name}</div>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                        <button onClick={(e) => {
+                          e.stopPropagation();
+                          updateCartQuantity(item.id, -1);
+                        }} style={styles.quantityButton}>-</button>
+                        <span style={{ color: "#fff" }}>{item.qty}</span>
+                        <button onClick={(e) => {
+                          e.stopPropagation();
+                          updateCartQuantity(item.id, 1);
+                        }} style={styles.quantityButton}>+</button>
+                      </div>
+                      <div style={{ color: "#fff" }}>₹{item.qty * item.price}</div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            <div style={{ padding: '20px', backgroundColor: 'rgba(0,0,0,0.1)' }}>
+              <div style={{ color: "#fff", marginBottom: "15px" }}>
+                Total: ₹{cart.reduce((sum, item) => sum + item.qty * item.price, 0)}
+              </div>
+              <button
+                onClick={goToCheckout}
+                disabled={cart.length === 0}
+                style={styles.checkoutButton}
+              >
+                Proceed to Checkout
+              </button>
+            </div>
+          </div>
+
+          <CartToggleButton />
         </div>
       </div>
 
@@ -580,28 +482,232 @@ export default function POSProducts() {
 }
 
 const styles = {
-  quantityButton: {
-    backgroundColor: "#2f855a",
-    color: "white",
-    border: "none",
-    borderRadius: "4px",
-    width: "24px",
-    height: "24px",
-    cursor: "pointer",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center"
+  // Layout & Container styles
+  mainContainer: {
+    maxWidth: '100vw',
+    minHeight: '100vh',
+    backgroundColor: '#f7fafc'
+  },
+  header: {
+    position: 'sticky',
+    top: 0,
+    zIndex: 1000,
+    background: 'rgba(255, 255, 255, 0.9)',
+    backdropFilter: 'blur(10px)',
+    padding: '12px 0',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
+  },
+  headerContent: {
+    maxWidth: '1400px',
+    margin: '0 auto',
+    padding: '0 20px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
+  logo: {
+    fontSize: '1.8em',
+    fontWeight: 'bold',
+    color: '#2f855a',
+    textDecoration: 'none'
+  },
+  nav: {
+    display: 'flex',
+    gap: '20px',
+    '@media (max-width: 768px)': {
+      display: 'none'
+    }
+  },
+  mobileMenu: {
+    display: 'none',
+    '@media (max-width: 768px)': {
+      display: 'block'
+    }
+  },
+  navLink: {
+    color: '#2f855a',
+    textDecoration: 'none',
+    fontWeight: 500,
+    padding: '8px 12px',
+    borderRadius: '6px',
+    transition: 'background 0.2s',
+    '&:hover': {
+      backgroundColor: 'rgba(47, 133, 90, 0.1)'
+    }
+  },
+  activeNavLink: {
+    backgroundColor: '#2f855a',
+    color: 'white',
+    '&:hover': {
+      backgroundColor: '#2f855a'
+    }
+  },
+
+  // Content Layout
+  contentContainer: {
+    display: 'flex',
+    maxWidth: '1400px',
+    margin: '0 auto',
+    padding: '20px',
+    gap: '30px',
+    '@media (max-width: 1024px)': {
+      flexDirection: 'column'
+    }
+  },
+  productSection: {
+    flex: '1 1 auto',
+    '@media (min-width: 1024px)': {
+      marginRight: props => props.isCartVisible ? '320px' : '0'
+    }
+  },
+  filterBar: {
+    display: 'flex',
+    gap: '15px',
+    marginBottom: '20px',
+    flexWrap: 'wrap',
+    '@media (max-width: 768px)': {
+      flexDirection: 'column'
+    }
+  },
+  searchInput: {
+    flex: 1,
+    minWidth: '200px',
+    padding: '12px',
+    borderRadius: '8px',
+    border: '1px solid #e2e8f0',
+    fontSize: '16px',
+    transition: 'border-color 0.2s',
+    '&:focus': {
+      outline: 'none',
+      borderColor: '#2f855a'
+    }
+  },
+  categorySelect: {
+    minWidth: '150px',
+    padding: '12px',
+    borderRadius: '8px',
+    border: '1px solid #e2e8f0',
+    backgroundColor: 'white',
+    cursor: 'pointer'
+  },
+
+  // Product Grid
+  productGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+    gap: '20px',
+    '@media (max-width: 640px)': {
+      gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))'
+    }
+  },
+  productCard: {
+    backgroundColor: 'white',
+    borderRadius: '12px',
+    padding: '15px',
+    transition: 'all 0.3s ease',
+    cursor: 'pointer',
+    border: '1px solid #e2e8f0',
+    '&:hover': {
+      transform: 'translateY(-5px)',
+      boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
+    }
+  },
+
+  // Cart Styles
+  cartPanel: {
+    position: 'fixed',
+    top: 0,
+    right: props => props.isCartVisible ? 0 : '-340px',
+    width: '340px',
+    height: '100vh',
+    backgroundColor: '#38a169',
+    display: 'flex',
+    flexDirection: 'column',
+    zIndex: 999,
+    transition: 'right 0.3s ease'
+  },
+  cartHeader: {
+    padding: '20px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderBottom: '1px solid rgba(255,255,255,0.1)'
+  },
+  cartItems: {
+    flex: 1,
+    overflowY: 'auto',
+    padding: '20px'
+  },
+  cartItem: {
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    borderRadius: '8px',
+    padding: '15px',
+    marginBottom: '10px',
+    animation: 'slideIn 0.3s ease'
+  },
+  cartFooter: {
+    padding: '20px',
+    backgroundColor: 'rgba(0,0,0,0.1)',
+    borderTop: '1px solid rgba(255,255,255,0.1)'
+  },
+  button: {
+    padding: '12px 20px',
+    borderRadius: '8px',
+    border: 'none',
+    cursor: 'pointer',
+    fontWeight: '600',
+    transition: 'all 0.2s',
+    '&:hover': {
+      transform: 'translateY(-1px)'
+    },
+    '&:active': {
+      transform: 'translateY(1px)'
+    }
   },
   checkoutButton: {
-    marginTop: "20px",
-    padding: "12px 18px",
-    backgroundColor: "#2f855a",
-    color: "white",
-    border: "none",
-    borderRadius: "6px",
-    fontWeight: "bold",
-    width: "100%",
-    cursor: "pointer",
-    opacity: 1
+    width: '100%',
+    padding: '12px 20px',
+    backgroundColor: '#2f855a',
+    color: 'white',
+    border: 'none',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontWeight: 'bold'
+  },
+  quantityButton: {
+    backgroundColor: '#2f855a',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    width: '24px',
+    height: '24px',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: 'background-color 0.2s',
+    '&:hover': {
+      backgroundColor: '#276749'
+    }
+  },
+  cartItemControls: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center"
+  },
+  quantityControls: {
+    display: "flex",
+    alignItems: "center",
+    gap: "10px"
+  },
+  closeButton: {
+    background: 'none',
+    border: 'none',
+    color: 'white',
+    fontSize: '24px',
+    cursor: 'pointer',
+    padding: '0 8px'
   }
 };
+
+// Remove keyframes object and add it to CSS file instead

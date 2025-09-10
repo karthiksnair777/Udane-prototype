@@ -4,6 +4,9 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import POSCheckoutSuccess from './pos/POSCheckoutSuccess';
+import POSDashboard from "./pos/POSDashboard";
+import POSManageProducts from "./pos/POSManageProducts";
+import POSOrders from "./pos/POSOrders";
 
 function App() {
   const [count, setCount] = useState(0)
@@ -32,6 +35,10 @@ function App() {
       </p>
       <Routes>
         <Route path="/pos/checkout-success" element={<POSCheckoutSuccess />} />
+        <Route path="/pos/dashboard" element={<POSDashboard />} />
+        <Route path="/pos/products" element={<POSProducts />} />
+        <Route path="/pos/manage-products" element={<POSManageProducts />} />
+        <Route path="/pos/order" element={<POSOrders />} />
       </Routes>
     </>
   )

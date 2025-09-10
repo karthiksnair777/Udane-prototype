@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "../supabaseClient";
+import POSHeader from "../components/POSHeader";
 
 export default function POSDashboard() {
   const [analytics, setAnalytics] = useState({
@@ -99,20 +100,9 @@ export default function POSDashboard() {
 
   return (
     <>
-      {/* Header */}
-      <header style={styles.header}>
-        <div style={styles.headerContent}>
-          <div style={styles.logo}>Udane POS</div>
-          <nav>
-            <Link to="/pos/products" style={styles.navLink}>Products</Link>
-            <Link to="/pos/order" style={styles.navLink}>Orders</Link>
-          </nav>
-        </div>
-      </header>
-
-      {/* Dashboard Content */}
+      <POSHeader />
       <div style={styles.container}>
-        <h2 style={styles.title}>Dashboard</h2>
+        <h1 style={styles.heading}>Dashboard</h1>
 
         {/* Sales Overview Cards */}
         <div style={styles.cardsGrid}>
@@ -166,82 +156,59 @@ export default function POSDashboard() {
 }
 
 const styles = {
-  header: {
-    background: "#ffffff",
-    padding: "16px 0",
-    marginBottom: "20px",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-  },
-  headerContent: {
-    maxWidth: 900,
-    margin: "0 auto",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  logo: {
-    fontWeight: "bold",
-    fontSize: "1.5em",
-    color: "#2f855a",
-  },
-  navLink: {
-    marginRight: 20,
-    color: "#2f855a",
-    textDecoration: "none",
-    fontWeight: 500,
-  },
   container: {
-    maxWidth: "1200px",
-    margin: "0 auto",
-    padding: "20px",
+    maxWidth: '1400px',
+    margin: '0 auto',
+    padding: '20px'
   },
-  title: {
-    color: "#2f855a",
-    marginBottom: "30px",
+  heading: {
+    color: '#2f855a',
+    marginBottom: '20px'
   },
   cardsGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-    gap: "20px",
-    marginBottom: "40px",
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+    gap: '20px',
+    marginBottom: '40px'
   },
   card: {
-    background: "white",
-    padding: "20px",
-    borderRadius: "10px",
-    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+    background: 'white',
+    padding: '20px',
+    borderRadius: '10px',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
   },
   cardValue: {
-    fontSize: "24px",
-    fontWeight: "bold",
-    color: "#2f855a",
-    marginTop: "10px",
+    fontSize: '24px',
+    fontWeight: 'bold',
+    color: '#2f855a',
+    marginTop: '10px'
   },
   section: {
-    background: "white",
-    padding: "20px",
-    borderRadius: "10px",
-    marginBottom: "30px",
+    background: 'white',
+    padding: '20px',
+    borderRadius: '10px',
+    marginBottom: '30px'
   },
   sectionTitle: {
-    marginBottom: "20px",
-    color: "#2d3748",
+    marginBottom: '20px',
+    color: '#2d3748'
   },
   table: {
-    width: "100%",
+    width: '100%'
   },
   tableHeader: {
-    display: "grid",
-    gridTemplateColumns: "2fr 1fr 1fr",
-    padding: "10px",
-    background: "#f7fafc",
-    fontWeight: "bold",
-    borderRadius: "6px",
+    display: 'grid',
+    gridTemplateColumns: '2fr 1fr 1fr',
+    padding: '10px',
+    background: '#f7fafc',
+    fontWeight: 'bold',
+    borderRadius: '6px'
   },
   tableRow: {
-    display: "grid",
-    gridTemplateColumns: "2fr 1fr 1fr",
-    padding: "10px",
-    borderBottom: "1px solid #edf2f7",
+    display: 'grid',
+    gridTemplateColumns: '2fr 1fr 1fr',
+    padding: '10px',
+    borderBottom: '1px solid #edf2f7'
   }
 };
+    
