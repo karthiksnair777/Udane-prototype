@@ -64,7 +64,7 @@ export default function CustomerLogin() {
     left: 0,
     width: "100%",
     height: "100%",
-    background: "url('/src/assets/loginbg.png') repeat-x", // Image background
+    background: "url('../assets/loginbg.png') repeat-x", // Image background
     backgroundSize: "cover", // Ensure the image covers the container
     backgroundPosition: "center", // Center the background image
     animation: "moveBackground 30s linear infinite", // Background animation
