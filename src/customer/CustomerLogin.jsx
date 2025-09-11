@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 import CustomerHeader from "./CustomerHeader";
-import logo from '../assets/2.png'
+import logo from '../assets/2.png';
+import loginBg from '../assets/loginbg.png';
 
 export default function CustomerLogin() {
   const [email, setEmail] = useState("");
@@ -64,13 +65,11 @@ export default function CustomerLogin() {
     left: 0,
     width: "100%",
     height: "100%",
-    background: "url('../assets/loginbg.png') repeat-x", // Image background
-    backgroundSize: "cover", // Ensure the image covers the container
-    backgroundPosition: "center", // Center the background image
-    animation: "moveBackground 30s linear infinite", // Background animation
-    // Add the black gradient from bottom to middle
-    backgroundImage: 
-      "linear-gradient(to top, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 50%), url('/src/assets/loginbg.png')",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    animation: "moveBackground 30s linear infinite",
+    backgroundRepeat: "repeat-x",
+    backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 50%), url(${loginBg})`
   }}
         ></div>
 
