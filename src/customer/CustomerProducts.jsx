@@ -8,7 +8,7 @@ export default function CustomerProducts() {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [quantities, setQuantities] = useState({}); // Track qty per product
+  const [quantities, setQuantities] = useState({});
 
   useEffect(() => {
     async function load() {
@@ -33,7 +33,6 @@ export default function CustomerProducts() {
       }
       return [...prev, { ...product, qty }];
     });
-    // Reset quantity for product to 1 after adding
     setQuantities((prev) => ({ ...prev, [product.id]: 1 }));
   };
 
@@ -85,14 +84,7 @@ export default function CustomerProducts() {
                     [p.id]: Math.max(1, Number(e.target.value)),
                   }))
                 }
-                style={{
-                  width: "60px",
-                  padding: "6px",
-                  marginBottom: "10px",
-                  borderRadius: "6px",
-                  border: "1px solid #ccc",
-                  textAlign: "center",
-                }}
+                style={styles.qtyInput}
               />
 
               <button style={styles.addButton} onClick={() => addToCart(p)}>
@@ -102,7 +94,7 @@ export default function CustomerProducts() {
           ))}
         </div>
 
-        <div style={{ textAlign: "center", marginTop: 30 }}>
+        <div style={{ textAlign: "center", marginTop: 40 }}>
           <button
             onClick={goToCart}
             disabled={cart.length === 0}
@@ -122,81 +114,99 @@ export default function CustomerProducts() {
 
 const styles = {
   container: {
-    padding: "30px 20px",
-    backgroundColor: "#f9f9f9",
+    padding: "40px 20px",
+    backgroundColor: "#f5f5f5",
     minHeight: "100vh",
-    fontFamily: "Segoe UI, sans-serif",
+    fontFamily: "'Segoe UI', sans-serif",
   },
   heading: {
     textAlign: "center",
-    color: "#2e7d32",
+    color: "#111",
     fontSize: "28px",
-    marginBottom: "20px",
+    fontWeight: "600",
+    marginBottom: "24px",
   },
   searchInput: {
     display: "block",
-    margin: "0 auto 30px auto",
-    padding: "10px 16px",
+    margin: "0 auto 40px auto",
+    padding: "14px 18px",
     width: "90%",
     maxWidth: "400px",
-    fontSize: "16px",
-    borderRadius: "8px",
-    border: "1px solid #ccc",
+    fontSize: "15px",
+    borderRadius: "12px",
+    border: "1px solid #ddd",
+    backgroundColor: "#fff",
+    outline: "none",
   },
   grid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-    gap: "20px",
+    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+    gap: "24px",
     padding: "0 10px",
   },
   card: {
     backgroundColor: "#fff",
-    borderRadius: "12px",
-    padding: "16px",
+    borderRadius: "16px",
+    padding: "24px 18px",
     textAlign: "center",
-    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.06)",
-    border: "1px solid #eee",
-    transition: "transform 0.2s",
+    border: "1px solid #f0f0f0",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    transition: "transform 0.2s ease",
   },
   image: {
-    width: "100px",
-    height: "100px",
+    width: "90px",
+    height: "90px",
     objectFit: "contain",
-    marginBottom: "12px",
+    marginBottom: "14px",
+    borderRadius: "12px",
+    backgroundColor: "#f8f8f8",
   },
   productName: {
-    fontSize: "16px",
+    fontSize: "15px",
     fontWeight: "600",
-    color: "#333",
-    marginBottom: "6px",
+    color: "#222",
+    marginBottom: "4px",
   },
   price: {
-    fontSize: "15px",
-    color: "#4caf50",
+    fontSize: "14px",
+    color: "#43a047",
+    marginBottom: "16px",
+  },
+  qtyInput: {
+    width: "60px",
+    padding: "8px",
     marginBottom: "12px",
+    borderRadius: "8px",
+    border: "1px solid #ccc",
+    textAlign: "center",
   },
   addButton: {
-    backgroundColor: "#43a047",
-    color: "#fff",
+    backgroundColor: "#A1F59F",
+    color: "#000",
     border: "none",
-    padding: "8px 12px",
-    borderRadius: "6px",
+    padding: "10px 16px",
+    borderRadius: "10px",
     fontSize: "14px",
+    fontWeight: "500",
     cursor: "pointer",
+    transition: "background 0.3s",
   },
   viewCartButton: {
-    backgroundColor: "#2e7d32",
-    color: "white",
+    backgroundColor: "#A1F59F",
+    color: "#000",
     padding: "14px 24px",
     border: "none",
-    borderRadius: "8px",
+    borderRadius: "12px",
     fontSize: "16px",
-    fontWeight: "bold",
+    fontWeight: "600",
   },
   centerMessage: {
     textAlign: "center",
     marginTop: "80px",
     fontSize: "18px",
-    color: "#666",
+    color: "#888",
   },
 };
+    

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 import CustomerHeader from "./CustomerHeader";
+import logo from '../assets/2.png'
 
 export default function CustomerLogin() {
   const [email, setEmail] = useState("");
@@ -24,7 +25,7 @@ export default function CustomerLogin() {
     }
 
     localStorage.setItem("customer_id", data.id);
-    navigate("/customer/products");
+    navigate("/customer/home");
   };
 
   const handleRegister = async () => {
@@ -40,109 +41,121 @@ export default function CustomerLogin() {
     }
 
     localStorage.setItem("customer_id", data.id);
-    navigate("/customer/products");
+    navigate("/customer/home");
   };
 
   return (
     <>
       <CustomerHeader />
-      <div style={styles.container}>
-        <div style={styles.glassBox}>
-          <h2 style={styles.heading}>Customer Login</h2>
-          <form onSubmit={handleLogin}>
-            <input
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              style={styles.input}
-              type="email"
-              required
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              style={styles.input}
-              required
-            />
-            <div style={styles.buttonRow}>
-              <button type="submit" style={styles.loginButton}>
-                Login
-              </button>
-              <button
-                type="button"
-                onClick={handleRegister}
-                style={styles.registerButton}
-              >
-                Register
-              </button>
-            </div>
-          </form>
+      <div
+        className="d-flex align-items-center justify-content-center min-vh-100"
+        style={{
+          position: "relative",
+          padding: "20px",
+          height: "100vh", // Full screen height
+          overflow: "hidden", // Hide any overflow
+        }}
+      >
+        {/* Background image container */}
+        <div
+           style={{
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    background: "url('/src/assets/loginbg.png') repeat-x", // Image background
+    backgroundSize: "cover", // Ensure the image covers the container
+    backgroundPosition: "center", // Center the background image
+    animation: "moveBackground 30s linear infinite", // Background animation
+    // Add the black gradient from bottom to middle
+    backgroundImage: 
+      "linear-gradient(to top, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 50%), url('/src/assets/loginbg.png')",
+  }}
+        ></div>
+
+        {/* Glass effect form container */}
+        <div
+          className="container"
+          style={{
+            maxWidth: "400px",
+            zIndex: 10,
+            marginTop: "150px", // Adjust for spacing
+            backdropFilter: "blur(10px)", // Glass effect (blurred background)
+            backgroundColor: "rgba(255, 255, 255, 0.2)", // Slightly transparent background
+            borderRadius: "15px", // Rounded corners for the form container
+            padding: "30px", // Padding for the form content
+            textAlign: "center", // Center the logo and paragraph
+          }}
+        >
+          {/* Logo and Paragraph Section */}
+         <div className="mb-4 text-center">
+  <img 
+    src={logo} 
+    alt="Logo"
+    style={{
+      maxWidth: "150px", 
+      marginBottom: "20px",
+    }}
+  />
+  <p className="fw-bold fs-5 text-black">
+    Udane Varum
+  </p>
+</div>
+
+          {/* Login Form */}
+          <div className="">
+            <form onSubmit={handleLogin}>
+              <div className="mb-3">
+                <input
+                  type="email"
+                  placeholder="Email"
+                  className="form-control"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="mb-3">
+                <input
+                  type="password"
+                  placeholder="Password"
+                  className="form-control"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="d-flex justify-content-between gap-2">
+                <button type="submit" className="btn btn-success w-50">
+                  Login
+                </button>
+                <button
+                  type="button"
+                  onClick={handleRegister}
+                  className="btn btn-outline-success w-50"
+                >
+                  Register
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
+
+      {/* CSS Animation for seamless movement */}
+      <style>
+        {`
+          @keyframes moveBackground {
+            0% {
+              background-position: 0 0; /* Start from left */
+            }
+            100% {
+              background-position: -100% 0; /* Move left to right */
+            }
+          }
+        `}
+      </style>
     </>
   );
 }
-
-const styles = {
-  container: {
-    minHeight: "100vh",
-    background: "linear-gradient(to bottom right, #41b452ff, #1f9739ff)",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: "20px",
-  },
-  glassBox: {
-    backdropFilter: "blur(15px)",
-    background: "rgba(255, 255, 255, 1)",
-    borderRadius: "16px",
-    boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
-    padding: "40px 30px",
-    maxWidth: "360px",
-    width: "100%",
-    border: "1px solid rgba(255, 255, 255, 0.2)",
-  },
-  heading: {
-    textAlign: "center",
-    marginBottom: "25px",
-    color: "#2e7d32", // Dark green
-    fontFamily: "'Segoe UI', sans-serif",
-  },
-  input: {
-    width: "100%",
-    padding: "12px 15px",
-    marginBottom: "15px",
-    borderRadius: "8px",
-    border: "1px solid #ccc",
-    outline: "none",
-    fontSize: "14px",
-  },
-  buttonRow: {
-    display: "flex",
-    justifyContent: "space-between",
-    gap: "10px",
-    marginTop: "10px",
-  },
-  loginButton: {
-    flex: 1,
-    padding: "10px",
-    backgroundColor: "#388e3c", // Green
-    color: "#fff",
-    border: "none",
-    borderRadius: "8px",
-    cursor: "pointer",
-    fontWeight: "bold",
-  },
-  registerButton: {
-    flex: 1,
-    padding: "10px",
-    backgroundColor: "#fff",
-    color: "#388e3c",
-    border: "2px solid #388e3c",
-    borderRadius: "8px",
-    cursor: "pointer",
-    fontWeight: "bold",
-  },
-};

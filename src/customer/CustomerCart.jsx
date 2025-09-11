@@ -8,51 +8,52 @@ export default function CustomerCart() {
   const cart = location.state?.cart || [];
 
   const handleCheckout = async () => {
-    const customerId = localStorage.getItem("customer_id");
-    const total = cart.reduce((sum, item) => sum + item.qty * item.price, 0);
-    const shopId = cart.length > 0 ? cart[0].shop_id : null;
+      navigate("/customer/checkout", { state: { cart } });
+    // const customerId = localStorage.getItem("customer_id");
+    // const total = cart.reduce((sum, item) => sum + item.qty * item.price, 0);
+    // const shopId = cart.length > 0 ? cart[0].shop_id : null;
 
-    if (!shopId || !customerId) {
-      alert("Missing shop or customer ID.");
-      return;
-    }
+    // if (!shopId || !customerId) {
+    //   alert("Missing shop or customer ID.");
+    //   return;
+    // }
 
-    const { data: order, error } = await supabase
-      .from("orders")
-      .insert([
-        {
-          shop_id: shopId,
-          customer_id: customerId,
-          total: total,
-          from_customer: true,
-        },
-      ])
-      .select()
-      .single();
+    // const { data: order, error } = await supabase
+    //   .from("orders")
+    //   .insert([
+    //     {
+    //       shop_id: shopId,
+    //       customer_id: customerId,
+    //       total: total,
+    //       from_customer: true,
+    //     },
+    //   ])
+    //   .select()
+    //   .single();
 
-    if (error) {
-      alert(`Failed to create order: ${error.message}`);
-      return;
-    }
+    // if (error) {
+    //   alert(`Failed to create order: ${error.message}`);
+    //   return;
+    // }
 
-    const orderItems = cart.map((item) => ({
-      order_id: order.id,
-      product_id: item.id,
-      qty: item.qty,
-      price: item.price,
-    }));
+    // const orderItems = cart.map((item) => ({
+    //   order_id: order.id,
+    //   product_id: item.id,
+    //   qty: item.qty,
+    //   price: item.price,
+    // }));
 
-    const { error: itemsError } = await supabase
-      .from("order_items")
-      .insert(orderItems);
+    // const { error: itemsError } = await supabase
+    //   .from("order_items")
+    //   .insert(orderItems);
 
-    if (itemsError) {
-      alert(`Failed to insert order items: ${itemsError.message}`);
-      return;
-    }
+    // if (itemsError) {
+    //   alert(`Failed to insert order items: ${itemsError.message}`);
+    //   return;
+    // }
 
-    alert("✅ Order placed successfully!");
-    navigate("/customer/orders");
+    // alert("✅ Order placed successfully!");
+    // navigate("/customer/orders");
   };
 
   if (!localStorage.getItem("customer_id")) {
@@ -85,7 +86,6 @@ export default function CustomerCart() {
                 </div>
               ))}
             </div>
-            <hr />
             <div style={styles.total}>
               <strong>Total:</strong> ₹{total}
             </div>
@@ -101,51 +101,55 @@ export default function CustomerCart() {
 
 const styles = {
   container: {
-    maxWidth: "500px",
+    maxWidth: "480px",
     margin: "60px auto",
-    padding: "30px",
+    padding: "36px 24px",
     backgroundColor: "#fff",
-    borderRadius: "12px",
-    boxShadow: "0 4px 16px rgba(0,0,0,0.06)",
-    fontFamily: "Segoe UI, sans-serif",
+    borderRadius: "20px",
+    boxShadow: "0 10px 24px rgba(0, 0, 0, 0.05)",
+    fontFamily: "'Segoe UI', sans-serif",
   },
   heading: {
     textAlign: "center",
-    fontSize: "24px",
-    color: "#2e7d32",
-    marginBottom: "25px",
+    fontSize: "26px",
+    color: "#111",
+    marginBottom: "30px",
+    fontWeight: "600",
   },
   cartList: {
-    marginBottom: "20px",
+    marginBottom: "24px",
   },
   cartItem: {
     display: "flex",
     justifyContent: "space-between",
-    padding: "8px 0",
+    padding: "10px 0",
     borderBottom: "1px solid #f0f0f0",
+    fontSize: "15px",
   },
   itemName: {
     fontWeight: "500",
     color: "#333",
   },
   itemQty: {
-    color: "#444",
+    color: "#444",  
   },
   total: {
-    fontSize: "18px",
-    margin: "15px 0",
+    fontSize: "17px",
+    margin: "20px 0",
     textAlign: "right",
     color: "#2e7d32",
   },
   checkoutBtn: {
-    backgroundColor: "#2e7d32",
-    color: "#fff",
-    padding: "12px 18px",
-    width: "100%",
-    fontSize: "16px",
+    backgroundColor: "#A1F59F",
+    color: "#000",
+    padding: "14px",
+    width: "100%",  
+    fontSize: "15px",
+    fontWeight: "600",
     border: "none",
-    borderRadius: "8px",
+    borderRadius: "12px",
     cursor: "pointer",
+    transition: "background 0.2s ease",
   },
   empty: {
     textAlign: "center",
