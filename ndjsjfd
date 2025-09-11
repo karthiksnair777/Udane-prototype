@@ -1,0 +1,22 @@
+*   [33m2272a3f[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Keep main version during merge
+[31m|[m[32m\[m  
+[31m|[m * [33m20640f8[m[33m ([m[1;31morigin/customer-app-ui-reimprovements[m[33m)[m remove heroui that stop deployment
+[31m|[m * [33m29b1743[m UI reimprovements for customer app
+[31m|[m * [33m9d216cd[m[33m ([m[1;31morigin/customer-app-ui-improvements[m[33m)[m UI improvements for customer app
+* [32m|[m [33m2d32987[m[33m ([m[1;31morigin/pos-features-1.1[m[33m, [m[1;32mpos-features-1.1[m[33m)[m WIP: local changes in main
+* [32m|[m [33m9db6269[m[33m ([m[1;31morigin/improvemts[m[33m, [m[1;32mimprovemts[m[33m)[m Improvements: updated cart, session handling, and cleanup
+* [32m|[m [33maa09d6b[m[33m ([m[1;31morigin/cart-updation-and-session[m[33m, [m[1;32mcart-updation-and-session[m[33m)[m WIP: local updates before creating new branch
+* [32m|[m [33mde389f1[m Added POSDashboard component with sales analytics & employee module, updated POSProducts with search, checkout improvements, and general cleanup
+* [32m|[m [33m1a16f1f[m[33m ([m[1;31morigin/pos-updation-sujith-1.0[m[33m, [m[1;32mpos-updation-sujith-1.0[m[33m)[m Merge pull request #3 from karthiksnair777/ui-update
+[33m|[m[32m\[m[32m|[m 
+[33m|[m * [33m1a575b8[m[33m ([m[1;31morigin/ui-update[m[33m)[m initial ui updation
+* [34m|[m [33m3fbc1ac[m Merge pull request #2 from karthiksnair777/files-upload
+[35m|[m[34m\[m[34m|[m 
+[35m|[m * [33m695481a[m[33m ([m[1;31morigin/files-upload[m[33m)[m initial commit with images
+[35m|[m * [33m9c39535[m Updated POSProducts.jsx, added manifest and image, edited index.html
+* [36m|[m [33m271b9a9[m[33m ([m[1;31morigin/updations-with-order-update-status[m[33m, [m[1;32mupdations-with-order-update-status[m[33m)[m Updations with order update status
+* [36m|[m [33mc0d5867[m[33m ([m[1;31morigin/update-pos-order-details[m[33m, [m[1;32mupdate-pos-order-details[m[33m)[m Update POS order details functionality
+* [36m|[m [33m0312917[m[33m ([m[1;31morigin/feature/header-product-updates[m[33m, [m[1;32mfeature/header-product-updates[m[33m)[m Added JSON file for header and product-based updates
+* [36m|[m [33m6f873b8[m Update header and product-based approach
+[36m|[m[36m/[m  
+* [33m5b8bfb4[m Initial commit

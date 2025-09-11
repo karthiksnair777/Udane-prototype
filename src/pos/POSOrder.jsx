@@ -2,7 +2,6 @@ import { useEffect, useState, useRef } from "react";
 import { supabase } from "../supabaseClient";
 import POSHeader from "../components/POSHeader";
 
-
 export default function POSOrder() {
   const [orders, setOrders] = useState([]);
   const [notification, setNotification] = useState(null);
@@ -13,6 +12,8 @@ export default function POSOrder() {
     monthlyTotal: 0,
     popularItems: [],
   });
+  const [newOrders, setNewOrders] = useState([]);
+  const [lastOrderTime] = useState(new Date());
   const shopId = localStorage.getItem("shop_id");
   const notifiedOrderIds = useRef(new Set());
 
@@ -131,7 +132,42 @@ export default function POSOrder() {
     loadAnalytics();
   }, [orders]);
 
-  async function handleStatusChange(orderId, newStatus) {
+  useEffect(() => {
+    if (!shopId) return;
+
+    // Subscribe to new orders
+    const channel = supabase
+      .channel("orders")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "orders",
+          filter: `shop_id=eq.${shopId}`,
+        },
+        (payload) => {
+          const newOrder = payload.new;
+          if (newOrder.status === "Pending") {
+            setNewOrders((prev) => [...prev, newOrder]);
+            // Auto-remove from new orders after 15 minutes
+            setTimeout(() => {
+              setNewOrders((prev) =>
+                prev.filter((order) => order.id !== newOrder.id)
+              );
+            }, 15 * 60 * 1000);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [shopId]);
+
+  // Remove from new orders when status changes
+  const handleStatusChange = async (orderId, newStatus) => {
     setUpdatingOrderId(orderId);
     const { data, error } = await supabase
       .from("orders")
@@ -140,17 +176,21 @@ export default function POSOrder() {
       .select()
       .single();
 
-    if (!error && data) {
+    if (!error) {
       setOrders((prev) =>
         prev.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o))
       );
+      // Remove from new orders when status changes from Pending
+      if (newStatus !== "Pending") {
+        setNewOrders((prev) => prev.filter((order) => order.id !== orderId));
+      }
     }
     setUpdatingOrderId(null);
-  }
+  };
 
   return (
     <>
-      <POSHeader />
+      <POSHeader newOrdersCount={newOrders.length} />
       <div
         style={{
           maxWidth: 720,

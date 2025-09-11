@@ -2,7 +2,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { supabase } from "../supabaseClient";
 
-export default function POSHeader() {
+export default function POSHeader({ newOrdersCount = 0 }) {
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [shopInfo, setShopInfo] = useState(null);
@@ -44,12 +44,17 @@ export default function POSHeader() {
         </Link>
 
         <div style={styles.rightSection}>
-          {/* Shop Profile with Dropdown */}
+          {/* Profile with Order Notification */}
           <div style={styles.profile} onClick={() => setIsProfileOpen(!isProfileOpen)}>
             <div style={styles.profileIcon}>👤</div>
             <div style={styles.shopName}>
               {shopInfo?.name || 'Loading...'}
             </div>
+            {newOrdersCount > 0 && (
+              <div style={styles.notification}>
+                {newOrdersCount}
+              </div>
+            )}
             {isProfileOpen && (
               <div style={styles.profileDropdown}>
                 <div style={styles.dropdownItem} onClick={handleLogout}>
@@ -208,6 +213,27 @@ const styles = {
     '&:hover': {
       backgroundColor: '#fff5f5'
     }
+  },
+  notification: {
+    position: 'absolute',
+    top: '-5px',
+    right: '-5px',
+    backgroundColor: '#e53e3e',
+    color: 'white',
+    borderRadius: '50%',
+    width: '20px',
+    height: '20px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '12px',
+    fontWeight: 'bold',
+    animation: 'blink 1s infinite'
+  },
+  '@keyframes blink': {
+    '0%': { opacity: 1 },
+    '50%': { opacity: 0.5 },
+    '100%': { opacity: 1 }
   }
 };
 
