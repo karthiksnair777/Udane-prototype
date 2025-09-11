@@ -58,16 +58,20 @@ export default function CustomerLogin() {
       >
         {/* Background image container */}
         <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            background: "url('/src/assets/loginbg.png') repeat-x", // Ensure the image repeats horizontally
-            backgroundSize: "cover", // Ensure the image covers the container
-            animation: "moveBackground 30s linear infinite", // Move slowly from left to right
-          }}
+           style={{
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    background: "url('/src/assets/loginbg.png') repeat-x", // Image background
+    backgroundSize: "cover", // Ensure the image covers the container
+    backgroundPosition: "center", // Center the background image
+    animation: "moveBackground 30s linear infinite", // Background animation
+    // Add the black gradient from bottom to middle
+    backgroundImage: 
+      "linear-gradient(to top, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 50%), url('/src/assets/loginbg.png')",
+  }}
         ></div>
 
         {/* Glass effect form container */}

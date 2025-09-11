@@ -1,8 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import "bootstrap/dist/css/bootstrap.min.css";
-import { NextUIProvider } from "@nextui-org/react";
+
 
 // POS imports
 import POSLogin from './pos/POSLogin';
@@ -22,7 +21,7 @@ import CustomerCheckout from './customer/CustomerCheckout';
 import CustomerOrders from './customer/CustomerOrders';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <NextUIProvider>
+  
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Navigate to="/pos/login" />} />
@@ -43,5 +42,5 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path="/customer/orders" element={<CustomerOrders />} />
       </Routes>
     </BrowserRouter>
-  </NextUIProvider>
+ 
 );
