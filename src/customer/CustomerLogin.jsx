@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 import CustomerHeader from "./CustomerHeader";
-import logo from '../assets/2.png'
+import logo from '/assets/2.png'
 
 export default function CustomerLogin() {
   const [email, setEmail] = useState("");
