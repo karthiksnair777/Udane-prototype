@@ -15,10 +15,12 @@ import CustomerLogin from './customer/CustomerLogin';
 import CustomerFront from './customer/CustomerFront';
 // import ShopSelection from './customer/ShopSelection';
 import CustomerHome from './customer/CustomerHome';
+import CustomerProdCategory from './customer/CustomerProdCategory';
 import CustomerProducts from './customer/CustomerProducts';
 import CustomerCart from './customer/CustomerCart';
 import CustomerCheckout from './customer/CustomerCheckout';
 import CustomerOrders from './customer/CustomerOrders';
+import CustomerProfile from './customer/CustomerProfile';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   
@@ -38,8 +40,10 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path="/customer/home" element={<CustomerHome />} />
         <Route path="/customer/products" element={<CustomerProducts />} />
         <Route path="/customer/cart" element={<CustomerCart />} />
+        <Route path="/customer/categories" element={<CustomerProdCategory />} />
         <Route path="/customer/checkout" element={<CustomerCheckout />} />
         <Route path="/customer/orders" element={<CustomerOrders />} />
+        <Route path="/customer/profile" element={<CustomerProfile />} />
       </Routes>
     </BrowserRouter>
  

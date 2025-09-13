@@ -9,6 +9,7 @@ export default function CustomerProducts() {
   const [cart, setCart] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [quantities, setQuantities] = useState({});
+  const [cartItemCount, setCartItemCount] = useState(0);
 
   useEffect(() => {
     async function load() {
@@ -16,6 +17,10 @@ export default function CustomerProducts() {
       if (!error) setProducts(data);
     }
     load();
+
+    // Retrieve the cart item count from localStorage (if any)
+    const cartData = localStorage.getItem("cartItems");
+    setCartItemCount(cartData ? JSON.parse(cartData).length : 0);
   }, []);
 
   const filteredProducts = products.filter((p) =>
@@ -33,7 +38,12 @@ export default function CustomerProducts() {
       }
       return [...prev, { ...product, qty }];
     });
+
     setQuantities((prev) => ({ ...prev, [product.id]: 1 }));
+
+    // Save to localStorage
+    localStorage.setItem("cartItems", JSON.stringify([...cart, { ...product, qty }]));
+    setCartItemCount(cartItemCount + 1);
   };
 
   const goToCart = () => {
@@ -55,13 +65,27 @@ export default function CustomerProducts() {
       <div style={styles.container}>
         <h2 style={styles.heading}>🛍️ Explore Our Products</h2>
 
-        <input
-          type="text"
-          placeholder="Search by product name..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          style={styles.searchInput}
-        />
+        <div style={styles.searchBarContainer}>
+          <input
+            type="text"
+            placeholder="Search by product name..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={styles.searchInput}
+          />
+
+          <button
+            onClick={goToCart}
+            disabled={cartItemCount === 0}
+            style={{
+              ...styles.viewCartButton,
+              opacity: cartItemCount === 0 ? 0.5 : 1,
+              cursor: cartItemCount === 0 ? "not-allowed" : "pointer",
+            }}
+          >
+            🛒 View Cart ({cartItemCount})
+          </button>
+        </div>
 
         <div style={styles.grid}>
           {filteredProducts.map((p) => (
@@ -93,20 +117,6 @@ export default function CustomerProducts() {
             </div>
           ))}
         </div>
-
-        <div style={{ textAlign: "center", marginTop: 40 }}>
-          <button
-            onClick={goToCart}
-            disabled={cart.length === 0}
-            style={{
-              ...styles.viewCartButton,
-              opacity: cart.length === 0 ? 0.5 : 1,
-              cursor: cart.length === 0 ? "not-allowed" : "pointer",
-            }}
-          >
-            🛒 View Cart ({cart.length})
-          </button>
-        </div>
       </div>
     </>
   );
@@ -126,9 +136,18 @@ const styles = {
     fontWeight: "600",
     marginBottom: "24px",
   },
+  searchBarContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
+    flexWrap: "wrap",
+    gap: "20px",
+    margin: "0 auto 40px auto",
+    width: "90%",
+    maxWidth: "700px",
+  },
   searchInput: {
     display: "block",
-    margin: "0 auto 40px auto",
     padding: "14px 18px",
     width: "90%",
     maxWidth: "400px",
@@ -137,6 +156,7 @@ const styles = {
     border: "1px solid #ddd",
     backgroundColor: "#fff",
     outline: "none",
+    
   },
   grid: {
     display: "grid",
@@ -193,15 +213,20 @@ const styles = {
     cursor: "pointer",
     transition: "background 0.3s",
   },
-  viewCartButton: {
-    backgroundColor: "#A1F59F",
-    color: "#000",
-    padding: "14px 24px",
-    border: "none",
-    borderRadius: "12px",
-    fontSize: "16px",
-    fontWeight: "600",
-  },
+ viewCartButton: {
+  backgroundColor: "#A1F59F",
+  color: "#000",
+  padding: "12px 18px",
+  border: "none",
+  borderRadius: "10px",
+  fontSize: "15px",
+  fontWeight: "600",
+  whiteSpace: "nowrap",
+  position: "absolute",  // Absolute positioning
+  right: "40px",         // Positioned 20px from the right edge of the container     // Positioned 10px from the bottom of the search bar container
+  cursor: "pointer",
+},
+
   centerMessage: {
     textAlign: "center",
     marginTop: "80px",
@@ -209,4 +234,3 @@ const styles = {
     color: "#888",
   },
 };
-    
