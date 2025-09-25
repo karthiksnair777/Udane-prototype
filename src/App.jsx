@@ -1,13 +1,32 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { Routes, Route, BrowserRouter as Router, useNavigate } from 'react-router-dom'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import POSCheckoutSuccess from './pos/POSCheckoutSuccess';
+import POSDashboard from "./pos/POSDashboard";
+import POSManageProducts from "./pos/POSManageProducts";
+import POSOrders from "./pos/POSOrders";
+import POSLogin from "./pos/POSLogin";
+
+function ProtectedRoute({ children }) {
+  const navigate = useNavigate();
+  const shopId = localStorage.getItem('shop_id');
+
+  useEffect(() => {
+    if (!shopId) {
+      navigate('/pos/login');
+    }
+  }, [shopId, navigate]);
+
+  return shopId ? children : null;
+}
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <>
+    <Router>
       <div>
         <a href="https://vite.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
@@ -28,7 +47,31 @@ function App() {
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>
-    </>
+      <Routes>
+        <Route path="/pos/login" element={<POSLogin />} />
+        <Route path="/pos/checkout-success" element={<POSCheckoutSuccess />} />
+        <Route path="/pos/dashboard" element={
+          <ProtectedRoute>
+            <POSDashboard />
+          </ProtectedRoute>
+        } />
+        <Route path="/pos/products" element={
+          <ProtectedRoute>
+            <POSProducts />
+          </ProtectedRoute>
+        } />
+        <Route path="/pos/manage-products" element={
+          <ProtectedRoute>
+            <POSManageProducts />
+          </ProtectedRoute>
+        } />
+        <Route path="/pos/order" element={
+          <ProtectedRoute>
+            <POSOrders />
+          </ProtectedRoute>
+        } />
+      </Routes>
+    </Router>
   )
 }
 

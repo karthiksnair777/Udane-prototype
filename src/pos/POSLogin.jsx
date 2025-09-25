@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
+import { useNavigate } from "react-router-dom";
 
 export default function POSLogin() {
-  const [username, setUsername] = useState("");
+  const [shopId, setShopId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -17,12 +17,12 @@ export default function POSLogin() {
     const { data, error } = await supabase
       .from("shops")
       .select("id")
-      .eq("username", username)
+      .eq("username", shopId)
       .eq("password", password)
       .single();
 
     if (error || !data) {
-      setError("Invalid username or password.");
+      setError("Invalid Shop ID or password.");
       setLoading(false);
       return;
     }
@@ -34,98 +34,137 @@ export default function POSLogin() {
 
   return (
     <div style={styles.container}>
-      <form onSubmit={handleLogin} style={styles.glassBox}>
-        <h2 style={styles.heading}>POS Login</h2>
+      {/* Left Side - Login Form */}
+      <div style={styles.leftPanel}>
+        <div style={styles.loginBox}>
+          <h2 style={styles.loginTitle}>Login to POS</h2>
+          <input
+            type="text"
+            placeholder="Shop ID"
+            value={shopId}
+            onChange={(e) => setShopId(e.target.value)}
+            style={styles.input}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            style={styles.input}
+          />
+          <button
+            onClick={handleLogin}
+            style={styles.loginButton}
+            disabled={loading}
+          >
+            {loading ? "Logging in..." : "Login"}
+          </button>
+          {error && <div style={styles.error}>{error}</div>}
+        </div>
+      </div>
 
-        {error && <div style={styles.error}>{error}</div>}
-
-        <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          style={styles.input}
-          required
-        />
-
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={styles.input}
-          required
-        />
-
-        <button
-          type="submit"
-          style={{
-            ...styles.loginButton,
-            opacity: loading ? 0.7 : 1,
-          }}
-          disabled={loading}
-        >
-          {loading ? "Logging in..." : "Login"}
-        </button>
-      </form>
+      {/* Right Side - Welcome Content */}
+      <div style={styles.rightPanel}>
+        <div style={styles.welcomeContent}>
+          <h1 style={styles.welcomeTitle}>Welcome to Udane POS</h1>
+          <p style={styles.welcomeText}>
+            Your complete vendor helper for managing inventory, sales, and orders.
+          </p>
+          <div style={styles.features}>
+            <div style={styles.featureItem}>✓ Easy Inventory Management</div>
+            <div style={styles.featureItem}>✓ Real-time Sales Tracking</div>
+            <div style={styles.featureItem}>✓ Order Management</div>
+            <div style={styles.featureItem}>✓ Customer Database</div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
 
 const styles = {
   container: {
-    minHeight: "100vh",
-    background: "linear-gradient(to bottom right, #10a344ff, #10a344ff)",
     display: "flex",
-    justifyContent: "center",
+    minHeight: "100vh",
+    backgroundColor: "#f7fafc",
+  },
+  leftPanel: {
+    flex: 1,
+    display: "flex",
     alignItems: "center",
-    padding: "20px",
-    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+    justifyContent: "center",
+    padding: "40px",
   },
-  glassBox: {
-    backdropFilter: "blur(10px)",
-    background: "rgba(255, 255, 255, 0.9)",
-    borderRadius: "16px",
-    boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
-    padding: "40px 30px",
+  rightPanel: {
+    flex: 1,
+    backgroundColor: "#2f855a",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "40px",
+    color: "white",
+  },
+  loginBox: {
     width: "100%",
-    maxWidth: "360px",
-    border: "1px solid rgba(255, 255, 255, 0.3)",
+    maxWidth: "400px",
+    padding: "40px",
+    backgroundColor: "white",
+    borderRadius: "12px",
+    boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
   },
-  heading: {
-    textAlign: "center",
-    marginBottom: "25px",
-    color: "#2f855a",
-    fontWeight: "600",
+  loginTitle: {
     fontSize: "24px",
+    fontWeight: "bold",
+    color: "#2f855a",
+    marginBottom: "24px",
+    textAlign: "center",
   },
   input: {
     width: "100%",
-    padding: "12px 15px",
-    marginBottom: "15px",
-    borderRadius: "8px",
-    border: "1px solid #ccc",
-    fontSize: "14px",
-    outline: "none",
-    boxSizing: "border-box",
+    padding: "12px",
+    marginBottom: "16px",
+    borderRadius: "6px",
+    border: "1px solid #e2e8f0",
+    fontSize: "16px",
   },
   loginButton: {
     width: "100%",
     padding: "12px",
-    backgroundColor: "#38a169",
-    color: "#fff",
-    fontSize: "16px",
-    fontWeight: "600",
+    backgroundColor: "#2f855a",
+    color: "white",
     border: "none",
-    borderRadius: "8px",
+    borderRadius: "6px",
+    fontSize: "16px",
+    fontWeight: "bold",
     cursor: "pointer",
-    transition: "background-color 0.3s",
   },
   error: {
-    color: "#c53030",
-    fontSize: "14px",
-    marginBottom: "10px",
+    color: "#e53e3e",
+    marginTop: "12px",
     textAlign: "center",
-    fontWeight: "500",
+  },
+  welcomeContent: {
+    maxWidth: "400px",
+  },
+  welcomeTitle: {
+    fontSize: "36px",
+    fontWeight: "bold",
+    marginBottom: "16px",
+  },
+  welcomeText: {
+    fontSize: "18px",
+    marginBottom: "32px",
+    opacity: 0.9,
+  },
+  features: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "16px",
+  },
+  featureItem: {
+    fontSize: "18px",
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
   },
 };
