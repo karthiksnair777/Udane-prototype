@@ -1,26 +1,26 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { posRoutes } from './routes/POSRoutes';
+import { customerRoutes } from './routes/CustomerRoutes';
 
-// POS imports
-import POSLogin from './pos/POSLogin';
-import POSProducts from './pos/POSProducts';
-import POSCheckout from './pos/POSCheckout';
-import POSPrint from './pos/POSPrint';
-import POSOrder from './pos/POSOrder';
-import POSDashboard from './pos/POSDashboard';
-import POSManageProducts from './pos/POSManageProducts';
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <BrowserRouter>
+      <Routes>
+        {posRoutes}
+        {customerRoutes}
+        <Route path="*" element={<div>Page not found</div>} />
+      </Routes>
+    </BrowserRouter>
+  </React.StrictMode>
+);
+  <React.StrictMode>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </React.StrictMode>
 
-// Customer imports
-import CustomerLogin from './customer/CustomerLogin';
-import CustomerFront from './customer/CustomerFront';
-// import ShopSelection from './customer/ShopSelection';
-import CustomerHome from './customer/CustomerHome';
-import CustomerProdCategory from './customer/CustomerProdCategory';
-import CustomerProducts from './customer/CustomerProducts';
-import CustomerCart from './customer/CustomerCart';
-import CustomerCheckout from './customer/CustomerCheckout';
-import CustomerOrders from './customer/CustomerOrders';
 import CustomerProfile from './customer/CustomerProfile';
 
 
