@@ -1,0 +1,81 @@
+import React from "react";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import "./PopularProducts.css";
+
+const PopularProducts = () => {
+    const products = [
+        { img: "https://cdn1.foodviva.com/static-content/food-images/juice-recipes/strawberry-juice-recipe/strawberry-juice-recipe.jpg", name: "Fresh Strawberry Juice", price: "₹ 90" },
+        { img: "https://img.freepik.com/free-photo/elevated-view-raw-vegetables-wooden-tray_23-2147870976.jpg", name: "Organic Vegetables Pack", price: "₹ 60" },
+        { img: "https://luvflowercake.com/wp-content/uploads/2023/08/1-41.webp", name: "Dairy Milk Pack", price: "₹ 200" },
+        { img: "https://img.freepik.com/free-photo/front-view-fresh-red-apples-dark-background-color-tree-mellow-ripe-vitamine-apple-pear-juice-food-diet_140725-158134.jpg?semt=ais_hybrid&w=740&q=80", name: "Fresh Apples", price: "₹ 120" },
+        { img: "https://5.imimg.com/data5/SELLER/Default/2023/10/357378088/BC/JB/KD/33662479/1121-steam-basmati-rice-500x500.jpeg", name: "Steam Basmati Rice", price: "₹ 105/kg" },
+        { img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyYWtEEDqzCz9g-dy5fQJ4gGmAGS1S-NOydw&s", name: "SunFlower Oil", price: "₹ 100" },
+    ];
+
+    // Slick carousel settings
+    const settings = {
+        dots: true,
+        infinite: true,
+        slidesToShow: 4,
+        slidesToScroll: 1,
+        autoplay: true,
+        autoplaySpeed: 2000,
+        speed: 500,
+        pauseOnHover: true,
+        responsive: [
+            {
+                breakpoint: 1024,
+                settings: {
+                    slidesToShow: 3,
+                    slidesToScroll: 1,
+                }
+            },
+            {
+                breakpoint: 768,
+                settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 1,
+                }
+            },
+            {
+                breakpoint: 480,
+                settings: {
+                    slidesToShow: 1,
+                    slidesToScroll: 1,
+                }
+            }
+        ]
+    };
+
+    return (
+        <div className="popular-container mt-5">
+            <h3 className="text-left mb-4" style={{ fontSize: '18px', color: "green" }}>
+                Popular Products
+            </h3>
+
+            <Slider {...settings}>
+                {products.map((product, index) => (
+                    <div key={index} className="px-2">
+                        <div className="card h-100 border-0 shadow-sm rounded-3">
+                            <div className="img-wrapper">
+                                <img src={product.img} alt={product.name} className="w-100" style={{
+                                    width: '100%',
+                                    height: '100%',
+                                    objectFit: 'contain',
+                                }} />
+                            </div>
+                            <div className="card-body text-center p-2">
+                                <h6 className="text-dark" style={{ fontSize: '0.9rem' }}>{product.name}</h6>
+                                <p className="text-success fw-bold" style={{ fontSize: '0.9rem' }}>{product.price}</p>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </Slider>
+        </div>
+    );
+};
+
+export default PopularProducts;

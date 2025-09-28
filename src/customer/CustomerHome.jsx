@@ -1,11 +1,29 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import CustomerHeader from './CustomerHeader';
+import { useState } from 'react';
+import HomepageBanner from "./HomepageBanner";
+import PopularProducts from './PopularProducts';
+import CustomerFooter from './CustomerFooter';
+ 
 
 function Home() {
+
+  const [loading, setLoading] = useState(false);
+
+  const handleViewMore = () => {
+    setLoading(true);
+    // Simulate loading time (replace with API call)
+    setTimeout(() => {
+      setLoading(false);
+      // 👉 load more categories here if needed
+    }, 2000);
+  };
+
   return (
     <>
       <CustomerHeader />
+      <HomepageBanner/>
       <div className="container">
         {/* Hero Section */}
         <div className="row">
@@ -30,46 +48,101 @@ function Home() {
           </div>
         </div>
 
-        {/* Categories */}
-        <div className="container mt-5">
-          <div className="row justify-content-center text-center">
-            {[
-              {
-                img: 'https://cdn.grofers.com/cdn-cgi/image/f=auto,fit=scale-down,q=70,w=200/layout-engine/2022-11/Slice-2_10.png',
-                // label: 'Dairy',
-              },
-              {
-                img: 'https://cdn.grofers.com/cdn-cgi/image/f=auto,fit=scale-down,q=70,w=200/layout-engine/2022-11/Slice-3_9.png',
-                // label: 'Fruits',
-              },
-              {
-                img: 'https://cdn.grofers.com/cdn-cgi/image/f=auto,fit=scale-down,q=70,w=200/layout-engine/2022-11/Slice-4_9.png',
-                // label: 'Bread',
-              },
-              {
-                img: 'https://cdn.grofers.com/cdn-cgi/image/f=auto,fit=scale-down,q=70,metadata=none,w=270/layout-engine/2022-11/Slice-13.png',
-                // label: 'Snacks',
-              },
-              {
-                img: 'https://cdn.grofers.com/cdn-cgi/image/f=auto,fit=scale-down,q=70,metadata=none,w=270/layout-engine/2022-11/Slice-7_3.png',
-                // label: 'Vegetables',
-              },
-              {
-                img: 'https://cdn.grofers.com/cdn-cgi/image/f=auto,fit=scale-down,q=70,metadata=none,w=270/layout-engine/2022-11/Slice-12.png',
-                // label: 'Household',
-              },
-            ].map((cat, index) => (
-              <div key={index} className="col-lg-2 col-sm-4 col-6 mb-4">
-                <div className="card shadow-sm h-100 border-0 rounded-3">
-                  <img src={cat.img} className="card-img-top p-2" alt={cat.label} />
-                  <div className="card-body text-center">
-                    <h6 className="text-dark">{cat.label}</h6>
-                  </div>
-                </div>
-              </div>
-            ))}
+       {/* Categories */}
+<div className="container mt-5">
+  <div className="row justify-content-center text-center">
+    {[
+      {
+        img: 'https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSm0wcxTftxkpcJArlGLyxRi0P3dOtN1lpQMb6QIU6Y1HfgoUV2',
+        label: 'Dairy & Bread',
+      },
+      {
+        img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSptK5r2Hz0a-7ydvcAu_xEXAxsvnbA2Wpal6SZFOypaqhkc_t_',
+        label: 'Fruits',
+      },
+      {
+        img: 'https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcT4cz1puo5ur-27GQevcAWXSiMak8Bww7eVyg0IS67QkDx69lTm',
+        label: 'Juices & Soft Drinks',
+      },
+      {
+        img: 'https://png.pngtree.com/thumb_back/fh260/background/20220408/pngtree-chicken-fillet-skinless-spice-cooking-photo-image_4051671.jpg',
+        label: 'Chicken, Meat & Fish',
+      },
+      {
+        img: 'https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQHVHxzXzgoPd_vmPSMxyhBIpUcmQh8fC8KReAY81UE7_jda8gU',
+        label: 'Chocolates, Candies & Ice Creams',
+      },
+      {
+        img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1yyrBVoM8Vdm_663WVXuJ4QStNnCogI7LVN1BUTXekEQx9nyn',
+        label: 'Sauces & Spreads',
+      },
+      {
+        img: 'https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRmnnf2NLoRb6lvWIxIFvfnXVwjlaFFxpO1PJejCXXj7LbH682N',
+        label: 'Bakery Biscuits',
+      },
+      {
+        img: 'https://blinkme.online/uploads/category/thump_1735797079.webp',
+        label: 'Tea Coffee',
+      },
+      {
+        img: 'https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcT8GP_BL1Hdlq1N-UN0Yu5vlwfOvFJf3NY_jf6nxkIXR1HbqcP4',
+        label: 'Instant Food',
+      },
+      {
+        img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9KFGMIDIn2OYw342IuMs7o77TOC4wc_f5gxnU5LAlSL90F2rnC_LEm7OT&s',
+        label: 'Masala',
+      },
+      {
+        img: 'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcToZqYuZV1FVtqwMW2wMZxF8UM7jpb0-S3MiRN4GlFFvm388ARq',
+        label: 'Oil',
+      },
+      {
+        img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQX2TjNaYeYHwor65CPA-X_D8MyIyhabGwlw2gGrkV_Ht7m4_G',
+        label: 'Cleaning Essentials',
+      },
+   ].map((cat, index) => (
+      <div key={index} className="col-lg-2 col-sm-4 col-6 mb-4">
+        <div
+          className="card shadow-sm h-100 border-0 rounded-3"
+          style={{
+            cursor: 'pointer',
+            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'scale(1.05)';
+            e.currentTarget.style.boxShadow = '0 6px 20px rgba(0,0,0,0.15)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'scale(1)';
+            e.currentTarget.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
+          }}
+        >
+          <div
+            style={{ height: '150px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '8px',}}>
+            <img src={cat.img} alt={cat.label}
+              style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain', }} />
+          </div>
+          <div className="card-body text-center">
+            <h6 className="text-dark">{cat.label}</h6>
           </div>
         </div>
+      </div>
+    ))}
+  </div>
+   <div className="text-center mt-4">
+      <Link to="/customer/categories">
+        <button
+          className="btn btn-primary px-4 py-2 rounded-pill shadow-sm"
+          style={{ backgroundColor: "lightgreen", border: "none", color: "black" }}
+          disabled={loading}
+        >
+          {loading ? "Udane..." : "View More"}
+        </button>
+      </Link>
+    </div>
+</div>
+
+<PopularProducts/>
 
         {/* Highlighted Sections */}
         <div className="row mt-5 g-4">
@@ -160,6 +233,7 @@ function Home() {
           </div>
         </div>
       </div>
+      <CustomerFooter/>
     </>
   );
 }

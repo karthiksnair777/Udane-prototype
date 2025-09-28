@@ -1,6 +1,7 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
+
 export default function CustomerHeader() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -160,6 +161,8 @@ export default function CustomerHeader() {
         </form>
 
         {/* Profile Icon */}
+       
+       
         <button
           onClick={() => setMenuOpen((prev) => !prev)} // Toggle menu visibility
           style={{
