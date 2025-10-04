@@ -55,42 +55,6 @@ function HomepageBanner() {
 
   return (
     <div className="container mt-3">
-      {/* Banner */}
-      <div
-        className="d-flex align-items-center justify-content-between p-4 rounded-4 mb-4"
-        style={{
-          background: "linear-gradient(90deg, #215423ff, #a8e9acff)",
-          color: "white",
-          padding: "20px",
-          borderRadius: "10px",
-          boxShadow: "0 4px 15px rgba(0, 0, 0, 0.3)",
-          border: "2px solid #a8e9acff",
-        }}
-      >
-        {/* Left Side Text */}
-        <div>
-          <h2 className="fw-bold">Your trusted grocery shop, now online.</h2>
-          <p className="mb-3">
-            Shop fresh vegetables, fruits & daily essentials with ease.
-          </p>
-          <button
-            className="btn btn-light px-4 py-2 rounded-pill fw-bold"
-            style={{ color: "#2e7d32" }}
-          >
-            Shop Now
-          </button>
-        </div>
-
-        {/* Right Side Image */}
-        <div>
-          <img
-            src="https://cdn.pixabay.com/photo/2022/08/01/09/12/fruits-7357732_1280.png"
-            alt="Grocery Banner"
-            style={{ maxHeight: "220px", borderRadius: "12px", paddingRight: '50px' }}
-          />
-        </div>
-      </div>
-
       {/* Advertisement Cards Carousel */}
       <div className="mb-4">
         <Slider {...carouselSettings}>

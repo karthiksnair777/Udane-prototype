@@ -1,0 +1,169 @@
+/* Page layout */
+.popular-products-page {
+  font-family: Arial, sans-serif;
+}
+
+/* Sidebar filter */
+.filter-box {
+  background: #d7f6cd;
+  border: 1px solid #eaeaea;
+}
+
+.filter-box h5 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.filter-box ul li {
+  margin-bottom: 8px;
+  font-size: 18px;
+  color: #555;
+}
+
+.filter-box input {
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+/* Product cards */
+.card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.card-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.card-body p {
+  margin: 4px 0;
+}
+
+/* Add button */
+.btn-success {
+  background-color: #28a745;
+  border: none;
+  font-size: 14px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  transition: background 0.2s ease;
+}
+
+.btn-success:hover {
+  background-color: #218838;
+}
+.product-card {
+  border: 2px solid #6fc374; /* light green border */
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* subtle shadow */
+  transition: transform 0.2s;
+  
+}
+
+.product-card:hover {
+  transform: scale(1.03); /* subtle hover effect */
+}
+
+
+/* Responsive grid */
+@media (max-width: 768px) {
+  .filter-box {
+    margin-bottom: 20px;
+  }
+  .card-title {
+    font-size: 13px;
+  }
+}
+
+/* Page layout */
+.popular-products-page {
+  font-family: Arial, sans-serif;
+}
+
+/* Sidebar filter */
+.filter-box {
+  background: #d7f6cd;
+  border: 1px solid #eaeaea;
+}
+
+.filter-box h5 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.filter-box ul li {
+  margin-bottom: 8px;
+  font-size: 18px;
+  color: #555;
+}
+
+.filter-box input {
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+/* Product cards */
+.card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.card-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.card-body p {
+  margin: 4px 0;
+}
+
+/* Add button */
+.btn-success {
+  background-color: #28a745;
+  border: none;
+  font-size: 14px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  transition: background 0.2s ease;
+}
+
+.btn-success:hover {
+  background-color: #218838;
+}
+.product-card {
+  border: 2px solid #6fc374; /* light green border */
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* subtle shadow */
+  transition: transform 0.2s;
+  
+}
+
+.product-card:hover {
+  transform: scale(1.03); /* subtle hover effect */
+}
+
+
+/* Responsive grid */
+@media (max-width: 768px) {
+  .filter-box {
+    margin-bottom: 20px;
+  }
+  .card-title {
+    font-size: 13px;
+  }
+}

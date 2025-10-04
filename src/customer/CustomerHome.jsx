@@ -5,25 +5,32 @@ import { useState } from 'react';
 import HomepageBanner from "./HomepageBanner";
 import PopularProducts from './PopularProducts';
 import CustomerFooter from './CustomerFooter';
+import { useNavigate } from 'react-router-dom';
+import PersonalCareProducts from './PersonalCareProducts';
+import ChocolatesProducts from './ChocolatesProducts';
+import ReadyInTwoMinProducts from './ReadyInTwoMinProducts';
  
 
 function Home() {
 
   const [loading, setLoading] = useState(false);
 
-  const handleViewMore = () => {
-    setLoading(true);
-    // Simulate loading time (replace with API call)
-    setTimeout(() => {
-      setLoading(false);
-      // 👉 load more categories here if needed
-    }, 2000);
-  };
+ const navigate = useNavigate();  // import from react-router-dom
+
+const handleViewMore = () => {
+  setLoading(true);
+  setTimeout(() => {
+    setLoading(false);
+    navigate("/customer/categories"); // 👈 redirect after loading
+  }, 2000);
+};
+
 
   return (
     <>
+    <div className='body'>
       <CustomerHeader />
-      <HomepageBanner/>
+      
       <div className="container">
         {/* Hero Section */}
         <div className="row">
@@ -47,6 +54,7 @@ function Home() {
             </div>
           </div>
         </div>
+        <HomepageBanner/>
 
        {/* Categories */}
 <div className="container mt-5">
@@ -129,18 +137,54 @@ function Home() {
       </div>
     ))}
   </div>
-   <div className="text-center mt-4">
-      <Link to="/customer/categories">
-        <button
-          className="btn btn-primary px-4 py-2 rounded-pill shadow-sm"
-          style={{ backgroundColor: "lightgreen", border: "none", color: "black" }}
-          disabled={loading}
-        >
-          {loading ? "Udane..." : "View More"}
-        </button>
-      </Link>
-    </div>
+  <div className="text-center mt-4">
+  <button
+    className="btn btn-primary px-4 py-2 rounded-pill shadow-sm"
+    style={{ backgroundColor: "#43a047", border: "none", color: "white" }}
+    disabled={loading}
+    onClick={handleViewMore}
+  >
+    {loading ? "Udane..." : "View More"}
+  </button>
 </div>
+
+</div>
+
+  {/* Banner */}
+      <div className="d-flex align-items-center justify-content-between p-4 rounded-4 mb-4 mt-4"
+        style={{
+          background: "linear-gradient(90deg, #215423ff, #a8e9acff)",
+          color: "white",
+          padding: "20px",
+          borderRadius: "10px",
+          boxShadow: "0 4px 15px rgba(0, 0, 0, 0.3)",
+          border: "2px solid #a8e9acff",
+        }}
+      >
+        {/* Left Side Text */}
+        <div>
+          <h2 className="fw-bold">Your trusted grocery shop, now online.</h2>
+          <p className="mb-3">
+            Shop fresh vegetables, fruits & daily essentials with ease.
+          </p>
+          <button
+            className="btn  px-4 py-2 rounded-pill fw-bold"
+            style={{ color: "#2f855a",backgroundColor:'white' }}
+          >
+            Shop Now
+          </button>
+        </div>
+
+        {/* Right Side Image */}
+        <div>
+          <img
+            src="https://cdn.pixabay.com/photo/2022/08/01/09/12/fruits-7357732_1280.png"
+            alt="Grocery Banner"
+            style={{ maxHeight: "220px", borderRadius: "12px", paddingRight: '50px' }}
+          />
+        </div>
+      </div>
+
 
 <PopularProducts/>
 
@@ -185,6 +229,10 @@ function Home() {
             </div>
           </div>
         </div>
+
+        <PersonalCareProducts/>
+        <ChocolatesProducts/>
+        <ReadyInTwoMinProducts/>
 
         {/* Mission */}
         <div className="row">
@@ -234,6 +282,7 @@ function Home() {
         </div>
       </div>
       <CustomerFooter/>
+      </div>
     </>
   );
 }

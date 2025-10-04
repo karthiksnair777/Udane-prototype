@@ -1,10 +1,13 @@
 import React from "react";
 import Slider from "react-slick";
+import { useNavigate } from "react-router-dom";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./PopularProducts.css";
 
 const PopularProducts = () => {
+    const navigate = useNavigate();
+
     const products = [
         { img: "https://cdn1.foodviva.com/static-content/food-images/juice-recipes/strawberry-juice-recipe/strawberry-juice-recipe.jpg", name: "Fresh Strawberry Juice", price: "₹ 90" },
         { img: "https://img.freepik.com/free-photo/elevated-view-raw-vegetables-wooden-tray_23-2147870976.jpg", name: "Organic Vegetables Pack", price: "₹ 60" },
@@ -25,28 +28,14 @@ const PopularProducts = () => {
         speed: 500,
         pauseOnHover: true,
         responsive: [
-            {
-                breakpoint: 1024,
-                settings: {
-                    slidesToShow: 3,
-                    slidesToScroll: 1,
-                }
-            },
-            {
-                breakpoint: 768,
-                settings: {
-                    slidesToShow: 2,
-                    slidesToScroll: 1,
-                }
-            },
-            {
-                breakpoint: 480,
-                settings: {
-                    slidesToShow: 1,
-                    slidesToScroll: 1,
-                }
-            }
+            { breakpoint: 1024, settings: { slidesToShow: 3 } },
+            { breakpoint: 768, settings: { slidesToShow: 2 } },
+            { breakpoint: 480, settings: { slidesToShow: 1 } }
         ]
+    };
+
+    const handleProductClick = () => {
+        navigate("/customer/CustomerPopularProducts"); 
     };
 
     return (
@@ -58,13 +47,19 @@ const PopularProducts = () => {
             <Slider {...settings}>
                 {products.map((product, index) => (
                     <div key={index} className="px-2">
-                        <div className="card h-100 border-0 shadow-sm rounded-3">
+                       
+                        <div
+                            className="card h-100 border-0 shadow-sm rounded-3 cursor-pointer"
+                            onClick={handleProductClick}
+                            style={{ cursor: "pointer" }}
+                        >
                             <div className="img-wrapper">
-                                <img src={product.img} alt={product.name} className="w-100" style={{
-                                    width: '100%',
-                                    height: '100%',
-                                    objectFit: 'contain',
-                                }} />
+                                <img
+                                    src={product.img}
+                                    alt={product.name}
+                                    className="w-100"
+                                    style={{ height: '150px', objectFit: 'contain' }}
+                                />
                             </div>
                             <div className="card-body text-center p-2">
                                 <h6 className="text-dark" style={{ fontSize: '0.9rem' }}>{product.name}</h6>
@@ -74,6 +69,17 @@ const PopularProducts = () => {
                     </div>
                 ))}
             </Slider>
+
+            
+            <div className="text-center mt-5">
+                <button
+                    className="btn btn-success px-4 py-2 rounded-pill shadow-sm"
+                    style={{ backgroundColor: "#2f855a" }}
+                    onClick={() => navigate("/customer/CustomerPopularProducts")}
+                >
+                    View All
+                </button>
+            </div>
         </div>
     );
 };

@@ -8,6 +8,8 @@ import CustomerProdCategory from '../customer/CustomerProdCategory';
 import CustomerCheckout from '../customer/CustomerCheckout';
 import CustomerOrders from '../customer/CustomerOrders';
 import CustomerProfile from '../customer/CustomerProfile';
+import CustomerPopularProducts from '../customer/CustomerPopularProducts';
+import CustomerProductDetail from '../customer/CustomerProductDetail';
 
 export const customerRoutes = [
   <Route path="/customer/login" element={<CustomerLogin />} key="customer-login" />,
@@ -18,5 +20,8 @@ export const customerRoutes = [
   <Route path="/customer/categories" element={<CustomerProdCategory />} key="customer-categories" />,
   <Route path="/customer/checkout" element={<CustomerCheckout />} key="customer-checkout" />,
   <Route path="/customer/orders" element={<CustomerOrders />} key="customer-orders" />,
-  <Route path="/customer/profile" element={<CustomerProfile />} key="customer-profile" />
+  <Route path="/customer/profile" element={<CustomerProfile />} key="customer-profile" />,
+  <Route path="/customer/CustomerPopularProducts" element={<CustomerPopularProducts />} key="customer-popular-products" />,
+  <Route path="/customer/product-detail/:id" element={<CustomerProductDetail />} key="customer-product-detail" />,
 ];
+

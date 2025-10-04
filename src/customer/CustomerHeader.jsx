@@ -75,11 +75,7 @@ export default function CustomerHeader() {
 
   return (
     <header
-      style={{
-        background: "#ffffff",
-        padding: "16px 0",
-        marginBottom: "30px",
-        boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+      style={{  padding: "16px 0", marginBottom: "30px", boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
         position: "relative",
       }}
     >
@@ -152,7 +148,7 @@ export default function CustomerHeader() {
             onChange={(e) => setSearchTerm(e.target.value)}
             style={{
               padding: "8px 12px",
-              border: "1px solid #ccc",
+              border: "1px solid #bfbdbdff",
               borderRadius: "8px",
               width: "100%",
               maxWidth: "250px",
