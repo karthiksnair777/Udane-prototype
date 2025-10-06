@@ -15,13 +15,13 @@ function Home() {
 
   const [loading, setLoading] = useState(false);
 
- const navigate = useNavigate();  // import from react-router-dom
+ const navigate = useNavigate(); 
 
 const handleViewMore = () => {
   setLoading(true);
   setTimeout(() => {
     setLoading(false);
-    navigate("/customer/categories"); // 👈 redirect after loading
+    navigate("/customer/categories"); 
   }, 2000);
 };
 
@@ -108,82 +108,137 @@ const handleViewMore = () => {
         img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQX2TjNaYeYHwor65CPA-X_D8MyIyhabGwlw2gGrkV_Ht7m4_G',
         label: 'Cleaning Essentials',
       },
-   ].map((cat, index) => (
-      <div key={index} className="col-lg-2 col-sm-4 col-6 mb-4">
-        <div
-          className="card shadow-sm h-100 border-0 rounded-3"
-          style={{
-            cursor: 'pointer',
-            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'scale(1.05)';
-            e.currentTarget.style.boxShadow = '0 6px 20px rgba(0,0,0,0.15)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = 'scale(1)';
-            e.currentTarget.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
-          }}
-        >
+    ].map((cat, index) => {
+      // show only 2 words
+      const shortLabel = cat.label.split(" ").slice(0, 2).join(" ") + (cat.label.split(" ").length > 2 ? "..." : "");
+      
+      return (
+        <div key={index} className="col-lg-2 col-sm-4 col-6 mb-4">
           <div
-            style={{ height: '150px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '8px',}}>
-            <img src={cat.img} alt={cat.label}
-              style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain', }} />
-          </div>
-          <div className="card-body text-center">
-            <h6 className="text-dark">{cat.label}</h6>
+            className="card shadow-sm h-100 border-0 rounded-3"
+            style={{
+              cursor: 'pointer',
+              transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+              width: '160px',       // fixed width
+              height: '200px',      // fixed height
+              margin: 'auto'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'scale(1.05)';
+              e.currentTarget.style.boxShadow = '0 6px 20px rgba(0,0,0,0.15)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'scale(1)';
+              e.currentTarget.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
+            }}
+          >
+            <div
+              style={{
+                height: '120px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: '8px',
+              }}
+            >
+              <img
+                src={cat.img}
+                alt={cat.label}
+                style={{
+                  maxHeight: '100%',
+                  maxWidth: '100%',
+                  objectFit: 'contain',
+                }}
+              />
+            </div>
+            <div className="card-body text-center p-2">
+              <h6 className="text-dark" style={{ fontSize: "0.9rem" }}>
+                {shortLabel}
+              </h6>
+            </div>
           </div>
         </div>
-      </div>
-    ))}
+      );
+    })}
   </div>
+
   <div className="text-center mt-4">
-  <button
-    className="btn btn-primary px-4 py-2 rounded-pill shadow-sm"
-    style={{ backgroundColor: "#43a047", border: "none", color: "white" }}
-    disabled={loading}
-    onClick={handleViewMore}
-  >
-    {loading ? "Udane..." : "View More"}
-  </button>
+    <button
+      className="btn btn-primary px-4 py-2 rounded-pill shadow-sm"
+      style={{ backgroundColor: "#43a047", border: "none", color: "white" }}
+      disabled={loading}
+      onClick={handleViewMore}
+    >
+      {loading ? "Udane..." : "View More"}
+    </button>
+  </div>
 </div>
 
-</div>
 
   {/* Banner */}
-      <div className="d-flex align-items-center justify-content-between p-4 rounded-4 mb-4 mt-4"
-        style={{
-          background: "linear-gradient(90deg, #215423ff, #a8e9acff)",
-          color: "white",
-          padding: "20px",
-          borderRadius: "10px",
-          boxShadow: "0 4px 15px rgba(0, 0, 0, 0.3)",
-          border: "2px solid #a8e9acff",
-        }}
-      >
-        {/* Left Side Text */}
-        <div>
-          <h2 className="fw-bold">Your trusted grocery shop, now online.</h2>
-          <p className="mb-3">
-            Shop fresh vegetables, fruits & daily essentials with ease.
-          </p>
-          <button
-            className="btn  px-4 py-2 rounded-pill fw-bold"
-            style={{ color: "#2f855a",backgroundColor:'white' }}
-          >
-            Shop Now
-          </button>
-        </div>
+      <div>
+  <style>
+    {`
+      @media (max-width: 768px) {
+        .grocery-banner {
+          flex-direction: column !important;
+          text-align: center;
+        }
+        .grocery-banner img {
+          max-height: 150px !important;
+          margin-top: 15px;
+          padding-right: 0 !important;
+        }
+        .grocery-banner h2 {
+          font-size: 1.4rem !important;
+        }
+        .grocery-banner p {
+          font-size: 0.9rem !important;
+        }
+      }
+    `}
+  </style>
 
-        {/* Right Side Image */}
-        <div>
-          <img
-            src="https://cdn.pixabay.com/photo/2022/08/01/09/12/fruits-7357732_1280.png"
-            alt="Grocery Banner"
-            style={{ maxHeight: "220px", borderRadius: "12px", paddingRight: '50px' }}
-          />
-        </div>
-      </div>
+  <div
+    className="d-flex align-items-center justify-content-between p-4 rounded-4 mb-4 mt-4 grocery-banner"
+    style={{
+      background: "linear-gradient(90deg, #215423ff, #a8e9acff)",
+      color: "white",
+      padding: "20px",
+      borderRadius: "10px",
+      boxShadow: "0 4px 15px rgba(0, 0, 0, 0.3)",
+      border: "2px solid #a8e9acff",
+    }}
+  >
+    {/* Left Side Text */}
+    <div>
+      <h2 className="fw-bold">Your trusted grocery shop, now online.</h2>
+      <p className="mb-3">
+        Shop fresh vegetables, fruits & daily essentials with ease.
+      </p>
+      <button
+        className="btn px-4 py-2 rounded-pill fw-bold"
+        style={{ color: "#2f855a", backgroundColor: "white" }}
+      >
+        Shop Now
+      </button>
+    </div>
+
+    {/* Right Side Image */}
+    <div>
+      <img
+        src="https://cdn.pixabay.com/photo/2022/08/01/09/12/fruits-7357732_1280.png"
+        alt="Grocery Banner"
+        style={{
+          maxHeight: "220px",
+          borderRadius: "12px",
+          paddingRight: "50px",
+        }}
+      />
+    </div>
+  </div>
+</div>
+
 
 
 <PopularProducts/>

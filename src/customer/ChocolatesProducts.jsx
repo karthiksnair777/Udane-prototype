@@ -139,48 +139,49 @@ const ChocolatesProducts = () => {
 
   // Add to Cart function
   const handleAddToCart = (product, e) => {
-    e.stopPropagation(); // Prevent card click
+    e.stopPropagation(); 
     
-    // Create cart item object
     const cartItem = {
       id: product.id,
       name: product.name,
-      price: parseFloat(product.currentPrice.replace('₹', '')), // Convert price to number
-      qty: 1, // Default quantity
+      price: parseFloat(product.currentPrice.replace('₹', '')),
+      qty: 1,
       image: product.image,
       size: product.size,
       category: product.category
     };
 
-    // Get existing cart from localStorage or initialize empty array
     const existingCart = JSON.parse(localStorage.getItem('customer_cart')) || [];
-    
-    // Check if item already exists in cart
     const existingItemIndex = existingCart.findIndex(item => item.id === cartItem.id);
     
     if (existingItemIndex > -1) {
-      // If item exists, increase quantity
       existingCart[existingItemIndex].qty += 1;
     } else {
-      // If item doesn't exist, add new item
       existingCart.push(cartItem);
     }
     
-    // Save updated cart to localStorage
     localStorage.setItem('customer_cart', JSON.stringify(existingCart));
-    
-    // Redirect to cart page with cart data
-    navigate("/customer/cart", { state: { cart: existingCart } });
+    alert(`${product.name} added to cart!`);
   };
 
-  // Function to truncate text
-  const truncateText = (text, maxLength) => {
-    if (text.length <= maxLength) return text;
-    return text.substring(0, maxLength) + '...';
+  // Calculate discount percentage
+  const calculateDiscount = (currentPrice, originalPrice) => {
+    if (!originalPrice) return 0;
+    const current = parseFloat(currentPrice.replace('₹', '').replace(',', ''));
+    const original = parseFloat(originalPrice.replace('₹', '').replace(',', ''));
+    return Math.round(((original - current) / original) * 100);
+  };
+
+  // Function to truncate product name to 3 words
+  const truncateWords = (text, wordLimit) => {
+    if (!text) return '';
+    const words = text.split(" ");
+    if (words.length <= wordLimit) return text;
+    return words.slice(0, wordLimit).join(" ") + "...";
   };
 
   return (
-    <div className="chocolates-section m-3">
+    <div className="personal-care-section">
       <h2 className="section-title">Chocolates</h2>
       
       <div className="products-grid">
@@ -189,7 +190,6 @@ const ChocolatesProducts = () => {
             key={product.id} 
             className="product-card"
             onClick={() => handleCardClick(product)}
-            style={{ cursor: 'pointer' }}
           >
             <div className="product-image-container">
               <img 
@@ -199,24 +199,34 @@ const ChocolatesProducts = () => {
                 onError={handleImageError}
                 loading="lazy"
               />
-            </div>
-            <div className="product-category">{product.category}</div>
-            <h3 className="product-name" title={product.name}>
-              {truncateText(product.name, 50)}
-            </h3>
-            <p className="product-size">{product.size}</p>
-            <div className="product-prices">
-              <span className="current-price">{product.currentPrice}</span>
-              {product.originalPrice && (
-                <span className="original-price">{product.originalPrice}</span>
+              {product.originalPrice && calculateDiscount(product.currentPrice, product.originalPrice) > 0 && (
+                <div className="discount-badge">
+                  {calculateDiscount(product.currentPrice, product.originalPrice)}% OFF
+                </div>
               )}
             </div>
-            <button 
-              className="add-to-cart-btn"
-              onClick={(e) => handleAddToCart(product, e)}
-            >
-              Add to Cart
-            </button>
+            
+            <div className="product-info">
+              <h3 className="product-name" title={product.name}>
+                {truncateWords(product.name, 3)}
+              </h3>
+              
+              <p className="product-size">{product.size}</p>
+              
+              <div className="product-prices">
+                <span className="current-price">{product.currentPrice}</span>
+                {product.originalPrice && (
+                  <span className="original-price">{product.originalPrice}</span>
+                )}
+              </div>
+              
+              <button 
+                className="add-to-cart-btn"
+                onClick={(e) => handleAddToCart(product, e)}
+              >
+                Add to Cart
+              </button>
+            </div>
           </div>
         ))}
       </div>

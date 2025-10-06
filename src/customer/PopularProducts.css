@@ -4,20 +4,45 @@
   margin: 0 auto;
 }
 
+.popular-card {
+  width: 200px;      /* fixed card width */
+  height: 260px;     /* fixed card height */
+  margin: auto;
+  transition: transform 0.3s ease;
+}
+
+.popular-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
+}
+
 .img-wrapper {
-  height: 200px;
-  overflow: hidden;
+  height: 150px;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
   padding: 10px;
 }
 
 .img-wrapper img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
   border-radius: 8px 8px 0 0;
+}
+
+.popular-card h6 {
+  font-size: 0.9rem;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* safe fallback */
+}
+
+.popular-card p {
+  font-size: 0.85rem;
+  margin: 5px 0 0;
 }
 
 .slick-prev:before,
@@ -35,23 +60,21 @@
   color: green !important;
 }
 
-.card {
-  transition: transform 0.3s ease;
-  margin: 0 5px;
-}
-
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
-}
-
-
 @media (max-width: 768px) {
-  .img-wrapper {
-    height: 150px;
+  .popular-card {
+    width: 160px;
+    height: 220px;
   }
-  
-  .popular-container {
-    padding: 10px;
+
+  .img-wrapper {
+    height: 120px;
+  }
+
+  .popular-card h6 {
+    font-size: 0.8rem;
+  }
+
+  .popular-card p {
+    font-size: 0.75rem;
   }
 }

@@ -45,32 +45,36 @@ const PopularProducts = () => {
             </h3>
 
             <Slider {...settings}>
-                {products.map((product, index) => (
-                    <div key={index} className="px-2">
-                       
-                        <div
-                            className="card h-100 border-0 shadow-sm rounded-3 cursor-pointer"
-                            onClick={handleProductClick}
-                            style={{ cursor: "pointer" }}
-                        >
-                            <div className="img-wrapper">
-                                <img
-                                    src={product.img}
-                                    alt={product.name}
-                                    className="w-100"
-                                    style={{ height: '150px', objectFit: 'contain' }}
-                                />
-                            </div>
-                            <div className="card-body text-center p-2">
-                                <h6 className="text-dark" style={{ fontSize: '0.9rem' }}>{product.name}</h6>
-                                <p className="text-success fw-bold" style={{ fontSize: '0.9rem' }}>{product.price}</p>
+                {products.map((product, index) => {
+                    // show only first 2 words
+                    const shortName =
+                        product.name.split(" ").slice(0, 2).join(" ") +
+                        (product.name.split(" ").length > 2 ? "..." : "");
+
+                    return (
+                        <div key={index} className="px-2">
+                            <div
+                                className="card popular-card border-0 shadow-sm rounded-3"
+                                onClick={handleProductClick}
+                                style={{ cursor: "pointer" }}
+                            >
+                                <div className="img-wrapper">
+                                    <img
+                                        src={product.img}
+                                        alt={product.name}
+                                        className="w-100"
+                                    />
+                                </div>
+                                <div className="card-body text-center p-2">
+                                    <h6 className="text-dark">{shortName}</h6>
+                                    <p className="text-success fw-bold">{product.price}</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                ))}
+                    );
+                })}
             </Slider>
 
-            
             <div className="text-center mt-5">
                 <button
                     className="btn btn-success px-4 py-2 rounded-pill shadow-sm"
