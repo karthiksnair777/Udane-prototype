@@ -69,14 +69,12 @@ const CustomerPopularProducts = () => {
     setTimeout(() => setCartMessage(""), 2000);
   };
 
-  // Filtered products
   let filteredProducts = products.filter((p) => {
     const categoryMatch = selectedCategories.length === 0 || selectedCategories.includes(p.category);
     const priceMatch = p.price <= maxPrice;
     return categoryMatch && priceMatch;
   });
 
-  // Sorting
   if (sortOrder === "lowToHigh") filteredProducts.sort((a, b) => a.price - b.price);
   else if (sortOrder === "highToLow") filteredProducts.sort((a, b) => b.price - a.price);
 
@@ -91,25 +89,14 @@ const CustomerPopularProducts = () => {
 
       {cartMessage && (
         <div
-          style={{
-            position: "fixed",
-            top: "20px",
-            right: "20px",
-            backgroundColor: "#28a745",
-            color: "white",
-            padding: "10px 20px",
-            borderRadius: "5px",
-            boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
-            zIndex: 9999,
-          }}
-        >
+          style={{ position: "fixed", top: "20px", right: "20px", backgroundColor: "#28a745", color: "white",
+            padding: "10px 20px", borderRadius: "5px", boxShadow: "0 2px 6px rgba(0,0,0,0.3)", zIndex: 9999, }} >
           {cartMessage}
         </div>
       )}
 
       <div className="popular-products-page container mt-4">
         <div className="row">
-          {/* sidebar */}
           <div className={`col-md-3 ${showMobileFilters ? "d-block" : "d-none d-md-block"}`}>
             <div className="filter-box p-3 shadow-sm rounded mb-3">
               <h5>Category</h5>
@@ -129,28 +116,18 @@ const CustomerPopularProducts = () => {
 
             <div className="filter-box p-3 shadow-sm rounded">
               <h5>Price Range</h5>
-              <input
-                type="range"
-                min="0"
-                max="200"
-                value={maxPrice}
-                onChange={handlePriceChange}
-                className="w-100"
-              />
+              <input type="range" min="0" max="200" value={maxPrice} onChange={handlePriceChange} className="w-100" />
               <p className="mt-2">
                 Up to: <strong>₹{maxPrice}</strong>
               </p>
             </div>
           </div>
 
-          {/* Products Grid */}
           <div className="col-md-9">
-            {/* Heading + Sort + Cart + Mobile Filter Icon */}
             <div className="d-flex justify-content-between align-items-center mb-3">
               <h5>Popular Products</h5>
 
               <div className="d-flex align-items-center">
-                {/* Mobile filter icon */}
                 <button
                   className="btn d-md-none me-2"
                   onClick={() => setShowMobileFilters(!showMobileFilters)}
@@ -173,17 +150,8 @@ const CustomerPopularProducts = () => {
                   🛒
                   {cartCount > 0 && (
                     <span
-                      style={{
-                        position: "absolute",
-                        top: "-8px",
-                        right: "-8px",
-                        backgroundColor: "green",
-                        color: "#fff",
-                        borderRadius: "50%",
-                        padding: "2px 6px",
-                        fontSize: "12px",
-                      }}
-                    >
+                      style={{ position: "absolute", top: "-8px", right: "-8px", backgroundColor: "green", color: "#fff",
+                        borderRadius: "50%", padding: "2px 6px", fontSize: "12px", }}>
                       {cartCount}
                     </span>
                   )}

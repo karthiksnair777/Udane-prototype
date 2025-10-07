@@ -5,7 +5,7 @@
   font-family: 'Arial', sans-serif;
   width: 100%;
   box-sizing: border-box;
-  overflow-x: hidden; /* Prevent horizontal scroll */
+  overflow-x: hidden; 
 }
 
 .section-title {
@@ -164,7 +164,6 @@
   transform: translateY(-1px);
 }
 
-/* Tablet View (768px - 1024px) */
 @media (max-width: 1024px) {
   .products-grid {
     grid-template-columns: repeat(4, 1fr);
@@ -176,7 +175,6 @@
   }
 }
 
-/* Small Tablet (600px - 768px) */
 @media (max-width: 768px) {
   .products-grid {
     grid-template-columns: repeat(3, 1fr);
@@ -201,7 +199,6 @@
   }
 }
 
-/* Large Mobile (480px - 600px) */
 @media (max-width: 600px) {
   .products-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -254,7 +251,6 @@
   }
 }
 
-/* Small Mobile (360px - 480px) */
 @media (max-width: 480px) {
   .products-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -321,7 +317,6 @@
   }
 }
 
-/* Extra Small Mobile (below 360px) */
 @media (max-width: 360px) {
   .products-grid {
     grid-template-columns: 1fr;
@@ -354,7 +349,6 @@
   }
 }
 
-/* Very Small Screens (below 320px) */
 @media (max-width: 320px) {
   .products-grid {
     max-width: 260px;
@@ -378,7 +372,6 @@
   }
 }
 
-/* Prevent horizontal scroll on all screen sizes */
 @media (max-width: 1400px) {
   .personal-care-section {
     padding: 15px;
@@ -391,7 +384,6 @@
   }
 }
 
-/* Touch device optimizations */
 @media (hover: none) {
   .product-card:hover {
     transform: none;
@@ -415,7 +407,6 @@
   }
 }
 
-/* Landscape mobile optimization */
 @media (max-height: 500px) and (orientation: landscape) {
   .product-card {
     height: 200px;
@@ -435,13 +426,11 @@
   }
 }
 
-/* Global fix to prevent horizontal scroll */
 body {
   overflow-x: hidden;
   width: 100%;
 }
 
-/* Ensure all containers don't cause overflow */
 * {
   box-sizing: border-box;
 }

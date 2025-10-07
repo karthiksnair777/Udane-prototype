@@ -18,7 +18,6 @@ export default function CustomerProducts() {
     }
     load();
 
-    // Retrieve the cart item count from localStorage (if any)
     const cartData = localStorage.getItem("cartItems");
     setCartItemCount(cartData ? JSON.parse(cartData).length : 0);
   }, []);
@@ -41,7 +40,6 @@ export default function CustomerProducts() {
 
     setQuantities((prev) => ({ ...prev, [product.id]: 1 }));
 
-    // Save to localStorage
     localStorage.setItem("cartItems", JSON.stringify([...cart, { ...product, qty }]));
     setCartItemCount(cartItemCount + 1);
   };
@@ -222,8 +220,8 @@ const styles = {
   fontSize: "15px",
   fontWeight: "600",
   whiteSpace: "nowrap",
-  position: "absolute",  // Absolute positioning
-  right: "40px",         // Positioned 20px from the right edge of the container     // Positioned 10px from the bottom of the search bar container
+  position: "absolute",  
+  right: "40px",              
   cursor: "pointer",
 },
 

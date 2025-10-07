@@ -32,7 +32,6 @@ const handleViewMore = () => {
       <CustomerHeader />
       
       <div className="container">
-        {/* Hero Section */}
         <div className="row">
           <div
             className="d-flex align-items-center w-100 rounded"
@@ -109,20 +108,14 @@ const handleViewMore = () => {
         label: 'Cleaning Essentials',
       },
     ].map((cat, index) => {
-      // show only 2 words
       const shortLabel = cat.label.split(" ").slice(0, 2).join(" ") + (cat.label.split(" ").length > 2 ? "..." : "");
       
       return (
         <div key={index} className="col-lg-2 col-sm-4 col-6 mb-4">
           <div
             className="card shadow-sm h-100 border-0 rounded-3"
-            style={{
-              cursor: 'pointer',
-              transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-              width: '160px',       // fixed width
-              height: '200px',      // fixed height
-              margin: 'auto'
-            }}
+            style={{ cursor: 'pointer', transition: 'transform 0.2s ease, box-shadow 0.2s ease', width: '160px',       
+              height: '200px',margin: 'auto' }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'scale(1.05)';
               e.currentTarget.style.boxShadow = '0 6px 20px rgba(0,0,0,0.15)';
@@ -133,23 +126,10 @@ const handleViewMore = () => {
             }}
           >
             <div
-              style={{
-                height: '120px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: '8px',
-              }}
+              style={{ height: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '8px', }}
             >
-              <img
-                src={cat.img}
-                alt={cat.label}
-                style={{
-                  maxHeight: '100%',
-                  maxWidth: '100%',
-                  objectFit: 'contain',
-                }}
-              />
+              <img src={cat.img} alt={cat.label}
+                style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain',}}/>
             </div>
             <div className="card-body text-center p-2">
               <h6 className="text-dark" style={{ fontSize: "0.9rem" }}>
@@ -203,14 +183,9 @@ const handleViewMore = () => {
     className="d-flex align-items-center justify-content-between p-4 rounded-4 mb-4 mt-4 grocery-banner"
     style={{
       background: "linear-gradient(90deg, #215423ff, #a8e9acff)",
-      color: "white",
-      padding: "20px",
-      borderRadius: "10px",
-      boxShadow: "0 4px 15px rgba(0, 0, 0, 0.3)",
-      border: "2px solid #a8e9acff",
+      color: "white", padding: "20px", borderRadius: "10px",boxShadow: "0 4px 15px rgba(0, 0, 0, 0.3)",border: "2px solid #a8e9acff",
     }}
   >
-    {/* Left Side Text */}
     <div>
       <h2 className="fw-bold">Your trusted grocery shop, now online.</h2>
       <p className="mb-3">
@@ -224,17 +199,11 @@ const handleViewMore = () => {
       </button>
     </div>
 
-    {/* Right Side Image */}
     <div>
       <img
         src="https://cdn.pixabay.com/photo/2022/08/01/09/12/fruits-7357732_1280.png"
         alt="Grocery Banner"
-        style={{
-          maxHeight: "220px",
-          borderRadius: "12px",
-          paddingRight: "50px",
-        }}
-      />
+        style={{ maxHeight: "220px", borderRadius: "12px", paddingRight: "50px", }}/>
     </div>
   </div>
 </div>
@@ -243,7 +212,6 @@ const handleViewMore = () => {
 
 <PopularProducts/>
 
-        {/* Highlighted Sections */}
         <div className="row mt-5 g-4">
           <div className="col-lg-6">
             <div

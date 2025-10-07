@@ -137,7 +137,6 @@ const ChocolatesProducts = () => {
     navigate(`/customer/product-detail/${product.id}`, { state: { product } });
   };
 
-  // Add to Cart function
   const handleAddToCart = (product, e) => {
     e.stopPropagation(); 
     
@@ -164,7 +163,6 @@ const ChocolatesProducts = () => {
     alert(`${product.name} added to cart!`);
   };
 
-  // Calculate discount percentage
   const calculateDiscount = (currentPrice, originalPrice) => {
     if (!originalPrice) return 0;
     const current = parseFloat(currentPrice.replace('₹', '').replace(',', ''));
@@ -172,7 +170,6 @@ const ChocolatesProducts = () => {
     return Math.round(((original - current) / original) * 100);
   };
 
-  // Function to truncate product name to 3 words
   const truncateWords = (text, wordLimit) => {
     if (!text) return '';
     const words = text.split(" ");

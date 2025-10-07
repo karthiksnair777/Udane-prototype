@@ -147,7 +147,6 @@ const ReadyInTwoMinProducts = () => {
     navigate(`/customer/product-detail/${product.id}`, { state: { product } });
   };
 
-  // Add to Cart function
   const handleAddToCart = (product, e) => {
     e.stopPropagation(); 
     
@@ -174,7 +173,6 @@ const ReadyInTwoMinProducts = () => {
     alert(`${product.name} added to cart!`);
   };
 
-  // Calculate discount percentage
   const calculateDiscount = (currentPrice, originalPrice) => {
     if (!originalPrice) return 0;
     const current = parseFloat(currentPrice.replace('₹', '').replace(',', ''));
@@ -182,7 +180,6 @@ const ReadyInTwoMinProducts = () => {
     return Math.round(((original - current) / original) * 100);
   };
 
-  // Function to truncate product name to 3 words
   const truncateWords = (text, wordLimit) => {
     if (!text) return '';
     const words = text.split(" ");
@@ -196,19 +193,10 @@ const ReadyInTwoMinProducts = () => {
       
       <div className="products-grid">
         {products.map((product) => (
-          <div 
-            key={product.id} 
-            className="product-card"
-            onClick={() => handleCardClick(product)}
-          >
+          <div  key={product.id}  className="product-card" onClick={() => handleCardClick(product)}>
             <div className="product-image-container">
-              <img 
-                src={product.image} 
-                alt={product.name}
-                className="product-image"
-                onError={handleImageError}
-                loading="lazy"
-              />
+              <img   src={product.image}   alt={product.name}  className="product-image"  onError={handleImageError}
+                loading="lazy"/>
               {product.originalPrice && calculateDiscount(product.currentPrice, product.originalPrice) > 0 && (
                 <div className="discount-badge">
                   {calculateDiscount(product.currentPrice, product.originalPrice)}% OFF

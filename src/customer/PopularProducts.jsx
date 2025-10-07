@@ -17,7 +17,6 @@ const PopularProducts = () => {
         { img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyYWtEEDqzCz9g-dy5fQJ4gGmAGS1S-NOydw&s", name: "SunFlower Oil", price: "₹ 100" },
     ];
 
-    // Slick carousel settings
     const settings = {
         dots: true,
         infinite: true,
@@ -46,7 +45,6 @@ const PopularProducts = () => {
 
             <Slider {...settings}>
                 {products.map((product, index) => {
-                    // show only first 2 words
                     const shortName =
                         product.name.split(" ").slice(0, 2).join(" ") +
                         (product.name.split(" ").length > 2 ? "..." : "");

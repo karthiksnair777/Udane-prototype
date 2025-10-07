@@ -4,14 +4,12 @@ import CustomerHeader from "./CustomerHeader";
 function CustomerProfile() {
   const [customerName, setCustomerName] = useState("Guest");
   const [customerPhone, setCustomerPhone] = useState("7306166866");
-  const [activeTab, setActiveTab] = useState("orders"); // "orders" | "address"
+  const [activeTab, setActiveTab] = useState("orders"); 
 
   useEffect(() => {
-    // Fetch user email/name from localStorage after login
     const email = localStorage.getItem("customer_email") || "guest@example.com";
     const phone = localStorage.getItem("customer_phone") || "7306166866";
 
-    // Use the part before '@' as display name
     const nameFromEmail = email.split("@")[0];
 
     setCustomerName(nameFromEmail);
@@ -24,9 +22,7 @@ function CustomerProfile() {
 
       <div className="card m-5" style={{ width: "72rem" }}>
         <div className="card-body d-flex">
-          {/* Left Section (Profile & Wallet) */}
           <div className="col-4 p-3">
-            {/* User Info */}
             <div className="d-flex align-items-center mb-3">
               <div
                 style={{
@@ -49,7 +45,6 @@ function CustomerProfile() {
               </div>
             </div>
 
-            {/* Daily Save Section */}
             <div
               className="p-3 mb-3"
               style={{
@@ -64,21 +59,18 @@ function CustomerProfile() {
               <button className="btn btn-warning btn-sm">Get Daily</button>
             </div>
 
-            {/* Zepto Cash Section */}
             <div className="p-3 mb-3 border rounded">
               <p className="fw-bold mb-1">Udane Cash & Gift Card</p>
               <p className="mb-1">Available Balance: ₹100</p>
               <button className="btn btn-dark btn-sm">Add Balance</button>
             </div>
 
-            {/* Free Cash */}
             <div className="p-3 border rounded bg-light">
               <p className="mb-0 text-danger fw-bold">
                 🎁 Free Cash <span className="float-end">₹100</span>
               </p>
             </div>
 
-            {/* My Address Button */}
             <div
               className="p-3 mt-3 border rounded cursor-pointer"
               style={{ cursor: "pointer" }}
@@ -88,8 +80,7 @@ function CustomerProfile() {
             </div>
           </div>
 
-          {/* Right Section */}
-          {/* Right Section */}
+         
 <div className="col-8 p-5 bg-light rounded">
   {activeTab === "orders" ? (
     <>
@@ -109,7 +100,6 @@ function CustomerProfile() {
     </>
   ) : (
     <>
-      {/* Add New Address Button */}
       <div
         className="d-flex justify-content-between align-items-center p-3 mb-3 border rounded"
         style={{ cursor: "pointer" }}
@@ -120,10 +110,8 @@ function CustomerProfile() {
         <span>›</span>
       </div>
 
-      {/* Saved Addresses */}
       <h6 className="fw-bold mb-3">Saved Addresses</h6>
 
-      {/* Empty State */}
       <div className="text-center p-5 border rounded bg-white">
         <img
           src="https://cdn-icons-png.flaticon.com/512/4150/4150897.png"

@@ -13,10 +13,8 @@ const ReviewsSection = ({ productId }) => {
   });
   const [hoverRating, setHoverRating] = useState(0);
 
-  // Generate a unique storage key based on product ID
   const storageKey = `product_reviews_${productId || 'default'}`;
 
-  // Load reviews from localStorage on component mount
   useEffect(() => {
     const savedReviews = localStorage.getItem(storageKey);
     if (savedReviews) {
@@ -29,12 +27,10 @@ const ReviewsSection = ({ productId }) => {
     }
   }, [storageKey]);
 
-  // Save reviews to localStorage whenever reviews change
   useEffect(() => {
     localStorage.setItem(storageKey, JSON.stringify(reviews));
   }, [reviews, storageKey]);
 
-  // Star rating component
   const StarRating = ({ rating, onRatingChange, interactive = false }) => {
     return (
       <div className="star-rating">
@@ -67,16 +63,14 @@ const ReviewsSection = ({ productId }) => {
     }
     
     const review = {
-      id: Date.now(), // Use timestamp for unique ID
+      id: Date.now(), 
       ...newReview,
       date: new Date().toISOString().split('T')[0],
       productId: productId || 'default'
     };
     
-    // Update reviews state (this will trigger the useEffect to save to localStorage)
     setReviews(prevReviews => [review, ...prevReviews]);
     
-    // Reset form
     setNewReview({
       rating: 0,
       title: "",
@@ -85,8 +79,6 @@ const ReviewsSection = ({ productId }) => {
     });
     setShowReviewForm(false);
     setHoverRating(0);
-    
-    // Show success message
     alert('Thank you for your review!');
   };
 
@@ -94,12 +86,10 @@ const ReviewsSection = ({ productId }) => {
     setNewReview({ ...newReview, rating });
   };
 
-  // Calculate average rating
   const averageRating = reviews.length > 0 
     ? (reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length).toFixed(1)
     : 0;
 
-  // Calculate rating distribution
   const ratingDistribution = [0, 0, 0, 0, 0];
   reviews.forEach(review => {
     if (review.rating >= 1 && review.rating <= 5) {
@@ -107,7 +97,6 @@ const ReviewsSection = ({ productId }) => {
     }
   });
 
-  // Function to clear all reviews (optional - for testing)
   const clearAllReviews = () => {
     if (window.confirm('Are you sure you want to clear all reviews?')) {
       setReviews([]);
@@ -120,7 +109,6 @@ const ReviewsSection = ({ productId }) => {
       <div className="reviews-header">
         <h2>Rating & Reviews</h2>
         
-        {/* Optional: Clear reviews button (remove in production) */}
         {reviews.length > 0 && (
           <button 
             className="clear-reviews-btn"
@@ -182,7 +170,6 @@ const ReviewsSection = ({ productId }) => {
         </button>
       </div>
 
-      {/* Review Form Modal */}
       {showReviewForm && (
         <div className="review-modal">
           <div className="modal-content">

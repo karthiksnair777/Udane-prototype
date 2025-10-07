@@ -5,8 +5,8 @@
 }
 
 .popular-card {
-  width: 200px;      /* fixed card width */
-  height: 260px;     /* fixed card height */
+  width: 200px;      
+  height: 260px;     
   margin: auto;
   transition: transform 0.3s ease;
 }
@@ -37,7 +37,7 @@
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis; /* safe fallback */
+  text-overflow: ellipsis; 
 }
 
 .popular-card p {

@@ -16,7 +16,6 @@ const CustomerProductDetail = () => {
     return <div className="error">No product details found</div>;
   }
 
-  // Create thumbnail images
   const thumbnailImages = [
     product.image,
     product.image,
@@ -24,7 +23,6 @@ const CustomerProductDetail = () => {
     product.image
   ];
 
-  // Share functions
   const shareOnFacebook = () => {
     const url = encodeURIComponent(window.location.href);
     const text = encodeURIComponent(`Check out this product: ${product.name}`);
@@ -52,37 +50,29 @@ const CustomerProductDetail = () => {
       });
   };
 
-  // Add to Cart function
   const handleAddToCart = () => {
-    // Create cart item object
     const cartItem = {
       id: product.id,
       name: product.name,
-      price: parseFloat(product.currentPrice.replace('₹', '').replace('¥', '')), // Convert price to number
-      qty: 1, // Default quantity
+      price: parseFloat(product.currentPrice.replace('₹', '').replace('¥', '')), 
+      qty: 1, 
       image: product.image,
       size: product.size,
       category: product.category
     };
 
-    // Get existing cart from localStorage or initialize empty array
     const existingCart = JSON.parse(localStorage.getItem('customer_cart')) || [];
     
-    // Check if item already exists in cart
     const existingItemIndex = existingCart.findIndex(item => item.id === cartItem.id);
     
     if (existingItemIndex > -1) {
-      // If item exists, increase quantity
       existingCart[existingItemIndex].qty += 1;
     } else {
-      // If item doesn't exist, add new item
       existingCart.push(cartItem);
     }
     
-    // Save updated cart to localStorage
     localStorage.setItem('customer_cart', JSON.stringify(existingCart));
     
-    // Redirect to cart page with cart data
     navigate("/customer/cart", { state: { cart: existingCart } });
   };
 
@@ -90,9 +80,7 @@ const CustomerProductDetail = () => {
     <>
       <CustomerHeader/>
       <div className="product-detail-container">
-        {/* Left - Image with Thumbnails */}
         <div className="product-detail-image">
-          {/* Main Image */}
           <div className="main-image-container">
             <img 
               src={selectedImage || product.image} 
@@ -119,25 +107,21 @@ const CustomerProductDetail = () => {
           </div>
         </div>
 
-        {/* Right - Info */}
         <div className="product-detail-info">
           <h2>{product.name}</h2>
           
-          {/* Category */}
           {product.category && (
             <div className="product-category">
               Category: <span>{product.category}</span>
             </div>
           )}
           
-          {/* Size */}
           {product.size && (
             <div className="product-size">
               Size: <span>{product.size}</span>
             </div>
           )}
 
-          {/* Price */}
           <div className="price">
             {product.currentPrice}{" "}
             {product.originalPrice && (
@@ -145,16 +129,13 @@ const CustomerProductDetail = () => {
             )}
           </div>
 
-          {/* Add to Cart Button */}
           <button className="add-btn" onClick={handleAddToCart}>
             Add to Cart
           </button>
 
-          {/* Product Details */}
           <h4>Product Details:</h4>
           <p>{product.description}</p>
 
-          {/* Features */}
           {product.features && product.features.length > 0 && (
             <>
               <h4>Key Features:</h4>
@@ -166,7 +147,6 @@ const CustomerProductDetail = () => {
             </>
           )}
 
-          {/* Extra Information */}
           <div className="extra-info">
             {product.seller && (
               <p><strong>Seller:</strong> {product.seller}</p>
@@ -189,7 +169,6 @@ const CustomerProductDetail = () => {
             )}
           </div>
 
-          {/* Share Section with Icons */}
           <div className="share-section">
             <h4>Share Product:</h4>
             <div className="share-icons">

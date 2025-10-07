@@ -25,6 +25,8 @@ import CustomerOrders from './customer/CustomerOrders';
 import CustomerProfile from './customer/CustomerProfile';
 import CustomerPopularProducts from './customer/CustomerPopularProducts';
 import CustomerProductDetail from './customer/CustomerProductDetail';
+import CustomerSubCategory from "./customer/CustomerSubCategory";
+
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -54,6 +56,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path="/customer/profile" element={<CustomerProfile />} />
         <Route path="/customer/popular-products" element={<CustomerPopularProducts />} />
         <Route path="/customer/product-detail/:id" element={<CustomerProductDetail />} />
+           <Route path="/subcategory/:categoryName" element={<CustomerSubCategory />} />
+        
 
       </Routes>
     </BrowserRouter>

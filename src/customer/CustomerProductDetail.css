@@ -1,9 +1,8 @@
-/* Add background to the entire page */
 .body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
-  background: linear-gradient(135deg, #28a745 10%, #cff2b4 30%, #cfcdcd 50%, #1a1a1a 100%);
+  /* background: linear-gradient(135deg, #28a745 10%, #cff2b4 30%, #cfcdcd 50%, #1a1a1a 100%); */
   background-attachment: fixed;
 }
 
@@ -22,7 +21,6 @@
   overflow: hidden;
 }
 
-/* Optional: Add a subtle pattern or overlay */
 .product-detail-container::before {
   content: '';
   position: absolute;
@@ -56,7 +54,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  /* background: linear-gradient(145deg, #377435, #e9ecef); */
   border-radius: 12px;
   padding: 20px;
   border: 1px solid rgba(34, 99, 49, 0.1);
@@ -344,7 +341,6 @@
   max-width: 500px;
 }
 
-/* Reviews Section Styles */
 .reviews-section {
   max-width: 1200px;
   margin: 0 auto;
@@ -466,7 +462,6 @@
   background: #f8f9fa;
 }
 
-/* Review Modal */
 .review-modal {
   position: fixed;
   top: 0;
@@ -577,7 +572,6 @@
   background: #4d862c;
 }
 
-/* Star Rating */
 .star-rating {
   display: flex;
   gap: 2px;
@@ -600,7 +594,6 @@
   color: #ffc107;
 }
 
-/* Reviews List */
 .reviews-list {
   margin-top: 30px;
 }
@@ -661,7 +654,6 @@
   margin: 0;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .reviews-summary {
     flex-direction: column;
@@ -686,11 +678,10 @@
   }
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
-  body {
+  /* body {
     background: linear-gradient(135deg, #28a745 0%, #ffffff 20%, #ffffff 80%, #000000 100%);
-  }
+  } */
   
   .product-detail-container {
     flex-direction: column;
@@ -765,8 +756,6 @@
     font-size: 16px;
   }
 }
-
-/* Remove old share buttons styles if they exist */
 .share-buttons,
 .share-btn {
   display: none;

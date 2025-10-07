@@ -11,10 +11,8 @@ export default function CustomerCheckout() {
   const shopId = cart.length > 0 ? cart[0].shop_id : null;
   const total = cart.reduce((sum, item) => sum + item.qty * item.price, 0);
 
-  // Toast state
   const [toast, setToast] = React.useState({ message: "", type: "" });
 
-  // Show toast message
   const showToast = (message, type = "success") => {
     setToast({ message, type });
     setTimeout(() => setToast({ message: "", type: "" }), 3000);
@@ -105,7 +103,6 @@ export default function CustomerCheckout() {
         )}
       </div>
 
-      {/* Toast Notification */}
       {toast.message && (
         <div
           style={{
